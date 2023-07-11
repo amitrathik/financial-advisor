@@ -1,0 +1,11 @@
+{
+  "name": "financial-advisor",
+  "version": "1.0.0",
+  "description": "Building a few modules in node to read and manipulate my financial statement data",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
