@@ -31,23 +31,23 @@ async function getAccountData (accountNumber = '8717'){
 
 // console.log(results);
 
-
-app.get('/', async function(req, res) {
+// API Endpoints
+app.get('/api', async function(req, res) {
 	const data = await getAccountData('1864');
 	res.json(data);
 });
 
+// Server-Rendered Front End
 // set the view engine to ejs
-// app.set('view engine', 'ejs');
-// app.use('/public',express.static(__dirname + '/public'));
-// // use res.render to load up an ejs view file
-// // index page
-// app.get('/', async function(req, res) {
-// 	const results = await transactions();
-
-//   	res.render('pages/index', {data: results});
+app.set('view engine', 'ejs');
+app.use('/public',express.static(__dirname + '/public'));
+// use res.render to load up an ejs view file
+// index page
+app.get('/ui', async function(req, res) {
+	const data = await getAccountData();
+  	res.render('pages/index', {data: data});
   
-// });
+});
 
 // // Setting the server to listen at port 3000
 app.listen(3000, function(req, res) {
