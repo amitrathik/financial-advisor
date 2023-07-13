@@ -26,10 +26,33 @@ async function getTransactions(){
 	});
 	return convertCSVToJSON(data);
 }
-const transactions = getTransactions().then((transactions)=>{
+getTransactions().then((transactions)=>{
 	// sort transactions, first by year, then by month
 	// we need to create an index of years to model the new array like : {'2021' : [...], '2022' : [...]}
-	return groupByYear(transactions);
+	// return groupByYear(transactions);
+
+	// get 2021 transactions
+	const transactionsFor2021 = {
+		transactions : [],
+		startingBalance : 0,
+		endingBalance:0
+	};
+	for(let i = 0; i < transactions.length; i++){
+		if(new Date(transactions[i].PostingDate).getFullYear() == '2021'){
+			transactionsFor2021.transactions.push(transactions[i])
+		}
+	}
+	// sort in asc order
+	transactionsFor2021.transactions.sort(function(a,b){
+		// Turn your strings into dates, and then subtract them
+		// to get a value that is either negative, positive, or zero.
+		return new Date(a.PostingDate) - new Date(b.PostingDate);
+	  });
+	const total = transactionsFor2021.transactions.length;
+	transactionsFor2021.startingBalance = transactionsFor2021.transactions[0].Balance;
+	transactionsFor2021.endingBalance = transactionsFor2021.transactions[total-1].Balance;
+	console.log(transactionsFor2021);
+
 }).catch((err) => {
 	console.log(err);
 });
