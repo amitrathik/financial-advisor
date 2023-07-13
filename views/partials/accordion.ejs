@@ -1,21 +1,15 @@
-<% 
-	for(const year in transactions){
-		console.log(year, transactions[year]);
-%>
-<div class="accordion" id="accordionExample<%= year %>">
+<%  %>
+<div class="accordion" id="accordionExample">
 	<div class="accordion-item">
-		<h2 class="accordion-header" id="heading<%= year %>">
-			<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#year<%= year %>" aria-expanded="true" aria-controls="collapseOne">
-				<%- year %>
+		<h2 class="accordion-header" id="headingOne">
+			<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+				2021 Transactions
 			</button>
 		</h2>
-		<div id="year<%= year %>" class="accordion-collapse collapse show" aria-labelledby="heading<%= year %>" data-bs-parent="#accordionExample<%= year %>">
+		<div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingONe" data-bs-parent="#accordionExample">
 			<div class="accordion-body">
-				<%- include('../partials/list.ejs', {transactions:transactions[year]}) %>
+				<%- include('../partials/list.ejs', {transactions: data.transactions}) %>
 			</div>
 		</div>
 	</div>
 </div>
-<% 
-	}
-%>
