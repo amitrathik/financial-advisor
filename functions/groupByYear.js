@@ -1,6 +1,6 @@
 const groupByYear = (transactions) => {
 	let transactionsByYears = {}
-	for(let i = 0; i < 5; i++){
+	for(let i = 0; i < transactions.length; i++){
 		let yearOfTransaction = new Date(transactions[i].PostingDate).getFullYear();
 		// console.log(yearOfTransaction,transactions[i]);
 		if(!transactionsByYears[yearOfTransaction]){

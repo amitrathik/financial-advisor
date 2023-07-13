@@ -41,20 +41,21 @@ const transactions = getTransactions().then((transactions)=>{
 // });
 
 // set the view engine to ejs
-app.set('view engine', 'ejs');
-app.use('/public',express.static(__dirname + '/public'));
+// app.set('view engine', 'ejs');
+// app.use('/public',express.static(__dirname + '/public'));
 // use res.render to load up an ejs view file
 // index page
-app.get('/', async function(req, res) {
-	const transactions = await fs.promises.readFile(path.resolve(file),'utf-8').catch((error) => {
-		console.log(error);
-	});
-	const transactionsJSON = convertCSVToJSON(transactions);
-  	res.render('pages/index', {transactions: transactionsJSON});
+// app.get('/', async function(req, res) {
+// 	const transactions = await fs.promises.readFile(path.resolve(file),'utf-8').catch((error) => {
+// 		console.log(error);
+// 	});
+// 	const transactionsJSON = groupByYear(convertCSVToJSON(transactions));
+// 	const results = Object.assign({},transactionsJSON)
+//   	res.render('pages/index', {transactions: results});
   
-});
+// });
 
 // Setting the server to listen at port 3000
-app.listen(3000, function(req, res) {
-	console.log("Server is running at port 3000");
-});
+// app.listen(3000, function(req, res) {
+// 	console.log("Server is running at port 3000");
+// });
