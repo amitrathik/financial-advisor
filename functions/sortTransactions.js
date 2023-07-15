@@ -5,7 +5,8 @@ function sortTransactions(year = '2023', transactions = []){
 		startingBalance : 0,
 		endingBalance:0
 	};
-	// SORT TRANSACTIONS BY YEAR
+	// SORT TRANSACTIONS BY YEAR 
+	// TODO GROUP TRANSACTIONS BY MONTHS 
 	for(let i = 0; i < transactions.length; i++){
 		if ('PostingDate' in transactions[i] && new Date(transactions[i].PostingDate).getFullYear() == year){
 			response.results.push(transactions[i])
@@ -17,7 +18,7 @@ function sortTransactions(year = '2023', transactions = []){
 	// GROUP TRANSACTIONS OUTGOING -> DETAILS = DEBIT
 		// GROUP TRANSACTIONS CC PAYMENT -> DESCRIPTION.includes('PAYMENT to Chase card')
 		// GROUP CC PAYMENTS By CC # -> DESCRIPTION.includes('card ending in ####')
-		
+
 
 	// // sort in asc order
 	// response.transactions.sort(function(a,b){
@@ -29,7 +30,7 @@ function sortTransactions(year = '2023', transactions = []){
 	// response.startingBalance = response.transactions[0].Balance;
 	// response.endingBalance = response.transactions[numberOfTransactions-1].Balance;
 
-	return response
+	return response;
 }
 
 module.exports = sortTransactions;
