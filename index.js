@@ -31,7 +31,7 @@ async function getAccountData (accountNumber = '8717'){
 
 // console.log(results);
 
-// TODO find all credit card payments from 8717
+// TODO find all credit card payments from primary acct = PERSONAL CHK 8717
 // Should have description something like "Payment to BANK card ending in #### MM/DD"
 // From this information we can use the card # (and bank) to find transactions for the card
 
