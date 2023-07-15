@@ -31,6 +31,21 @@ async function getAccountData (accountNumber = '8717'){
 
 // console.log(results);
 
+// TODO find all credit card payments from 8717
+// Should have description something like "Payment to BANK card ending in #### MM/DD"
+// From this information we can use the card # (and bank) to find transactions for the card
+
+// TODO find all money transfers from/to people (CK, KR)
+// Should have description something like "Zelle payment from/to PERSON NAME TRANSACTION_ID"
+// Well this specific for Chase, using Zelle to transfer between Chase customers
+// Another description could be "Online transfer to/from CHK ...#### transaction#: TRANSACTION_ID MM/DD"
+// This describes money transfered between different CHK accts within Chase
+// This won't cover all the transactions but it will handle a decent chunk of them
+
+// Sorting out the CC transactions will be another task in itself
+
+
+
 // API Endpoints
 app.get('/api', async function(req, res) {
 	const data = await getAccountData('1864');
