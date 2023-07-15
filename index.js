@@ -27,13 +27,20 @@ async function getAccountData (accountNumber = '8717'){
 	})
 }
 
-// const results = await getAccountData('1864');
-
-// console.log(results);
-
 // TODO find all credit card payments from primary acct = PERSONAL CHK 8717
 // Should have description something like "Payment to BANK card ending in #### MM/DD"
 // From this information we can use the card # (and bank) to find transactions for the card
+// what's the best way to look for a phrase with JSON.
+// maybe includes("Payment to") || ("Payment from") to start
+// then reading the desription, possibly breaking it into an array based on the template above
+// so it would be like ["Payment to/from", "(BANK) card", "ending in ####"] 
+// with this we can determine the direction of the money // although Credit and Debit would also help with that as well
+// then to which card by bank and #### 
+// not sure if this is how all CC transactions are treated or just Chase accts. will proceed accordingly
+
+
+
+
 
 // TODO find all money transfers from/to people (CK, KR)
 // Should have description something like "Zelle payment from/to PERSON NAME TRANSACTION_ID"
@@ -48,7 +55,7 @@ async function getAccountData (accountNumber = '8717'){
 
 // API Endpoints
 app.get('/api', async function(req, res) {
-	const data = await getAccountData('1864');
+	const data = await getAccountData();
 	res.json(data);
 });
 
