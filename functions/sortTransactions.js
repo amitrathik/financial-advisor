@@ -5,6 +5,7 @@ function sortTransactions(year = '2023', transactions = []){
 		startingBalance : 0,
 		endingBalance:0
 	};
+	// SORT TRANSACTIONS BY YEAR
 	for(let i = 0; i < transactions.length; i++){
 		if ('PostingDate' in transactions[i] && new Date(transactions[i].PostingDate).getFullYear() == year){
 			response.results.push(transactions[i])
@@ -12,6 +13,12 @@ function sortTransactions(year = '2023', transactions = []){
 			response.results.push(transactions[i])
 		}
 	}
+	// GROUP TRANSACTIONS INCOMING -> DETAILS = CREDIT
+	// GROUP TRANSACTIONS OUTGOING -> DETAILS = DEBIT
+		// GROUP TRANSACTIONS CC PAYMENT -> DESCRIPTION.includes('PAYMENT to Chase card')
+		// GROUP CC PAYMENTS By CC # -> DESCRIPTION.includes('card ending in ####')
+		
+
 	// // sort in asc order
 	// response.transactions.sort(function(a,b){
 	// 	// Turn your strings into dates, and then subtract them
