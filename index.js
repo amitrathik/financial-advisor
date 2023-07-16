@@ -49,10 +49,28 @@ function getCard(cardNumber = '2976'){
 }
 
 const card = getCard();
+console.log(card);
 const transactions = getAccountData('2976').then((transactions) => {
 	// based on card model, calculate the balance for each statement 
 	// i can use the opening and closing date
 	// basically I want to determine what the balance is for this card around 10/2021 
+	
+	// get all transactions from 01/04/2021 -> 02/01/2021
+	const startDate = new Date('01/04/2021');
+	const endDate = new Date('02/04/2021');
+
+	const statementTransactions = []
+	 transactions.results.map((transaction) => {
+		const transactionDate = new Date(transaction.TransactionDate);
+		if((transactionDate >= startDate && transactionDate < endDate) && !transaction.Description.includes('Payment Thank You-Mobile')){
+			statementTransactions.push(transaction);
+		}
+	})
+	let balance = 0.00;
+	for(let i = 0; i < statementTransactions.length; i++){
+		balance += parseFloat(statementTransactions[i].Amount);
+	}
+	console.log(balance);
 	return transactions;
 
 });
