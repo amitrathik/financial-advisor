@@ -55,25 +55,42 @@ const transactions = getAccountData('2976').then((transactions) => {
 	// i can use the opening and closing date
 	// basically I want to determine what the balance is for this card around 10/2021 
 	
-	// get all transactions from 01/04/2021 -> 02/01/2021
+	// get all transactions starting from 01/04/2021 ending before 02/04/2021
 	const startDate = new Date('01/04/2021');
 	const endDate = new Date('02/04/2021');
 
-	const statementTransactions = []
+	const transactionsInRange = [];
+	const paymentsOrCredits = [];
+	const purchases = [];
 	 transactions.results.map((transaction) => {
 		const transactionDate = new Date(transaction.TransactionDate);
-		if((transactionDate >= startDate && transactionDate < endDate) && !transaction.Description.includes('Payment Thank You-Mobile')){
-			statementTransactions.push(transaction);
+		// grab the transactions within the timeframe
+		if((transactionDate >= startDate && transactionDate < endDate)){
+			transactionsInRange.push(transaction);
 		}
 	})
-	let balance = 0.00;
-	for(let i = 0; i < statementTransactions.length; i++){
-		balance += parseFloat(statementTransactions[i].Amount);
-	}
-	console.log(balance);
+
+	transactionsInRange.map((transaction) => {
+		// grab the transactions going in(positive # means payments or credits)
+		if(transaction.Description.includes('Payment Thank You-Mobile') || parseFloat(transaction.Amount) > 0 ){
+			paymentsOrCredits.push(transaction);
+		}else{
+			purchases.push(transaction);
+		}
+	})
+	console.log(transactionsInRange.length, paymentsOrCredits.length, purchases.length)
+	console.log("payments or credits: ", calculateBalance(paymentsOrCredits), "purchases: ", calculateBalance(purchases));
 	return transactions;
 
 });
+
+function calculateBalance(transactions){
+	let balance = 0;
+	for(let i = 0; i < transactions.length; i++){
+		balance += parseFloat(transactions[i].Amount);
+	}
+	return balance;
+}
 // i have two files in activities for this card, i know there is some overlap, maybe I can merge the two records
 // for simplicity I might just focus on 2976 for now.
 
