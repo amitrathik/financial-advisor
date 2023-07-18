@@ -27,7 +27,7 @@ return getAccountData('2976').then((transactions) => {
 	// basically I want to determine what the balance is for this card around 10/2021 
 	
 	// get all transactions starting from 01/04/2021 ending before 02/04/2021
-	const transactionsInRange = sortTransactions({startDate : '01/04/2021', endDate : '10/05/2021'}, transactions);
+	const transactionsInRange = sortTransactions({startDate : '01/04/2021', endDate : '12/04/2021'}, transactions);
 	const paymentsOrCredits = [];
 	const purchases = [];
 
