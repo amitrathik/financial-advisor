@@ -19,43 +19,35 @@ const app = express();
 
 const card = getCard();
 // generates monthly account summary
-function getAccountSummary(){
-	return getAccountData('2976').then((transactions) => {
-		// based on card model, calculate the balance for each statement 
-		// i can use the opening and closing date
-		// basically I want to determine what the balance is for this card around 10/2021 
-		
-		// get all transactions starting from 01/04/2021 ending before 02/04/2021
-		const startDate = new Date('02/04/2021');
-		const endDate = new Date('03/04/2021');
+const accountSummaries = [];
+let balance =  card.previousBalance;
+return getAccountData('2976').then((transactions) => {
+	// based on card model, calculate the balance for each statement 
+	// i can use the opening and closing date
+	// basically I want to determine what the balance is for this card around 10/2021 
+	
+	// get all transactions starting from 01/04/2021 ending before 02/04/2021
+	const transactionsInRange = sortTransactions({startDate : '01/04/2021', endDate : '10/05/2021'}, transactions);
+	const paymentsOrCredits = [];
+	const purchases = [];
 
-		const transactionsInRange = [];
-		const paymentsOrCredits = [];
-		const purchases = [];
-		transactions.map((transaction) => {
-			const transactionDate = new Date(transaction.TransactionDate);
-			// grab the transactions within the timeframe
-			if((transactionDate >= startDate && transactionDate < endDate)){
-				transactionsInRange.push(transaction);
-			}
-		})
 
-		transactionsInRange.map((transaction) => {
-			// grab the transactions going in(positive # means payments or credits)
-			if(transaction.Description.includes('Payment Thank You-Mobile') || parseFloat(transaction.Amount) > 0 ){
-				paymentsOrCredits.push(transaction);
-			}else{
-				purchases.push(transaction);
-			}
-		})
-		console.log(transactionsInRange.length, paymentsOrCredits.length, purchases.length)
-		console.log("payments or credits: ", calculateBalance(paymentsOrCredits), "purchases: ", calculateBalance(purchases));
-
-		const newBalance = card.previousBalance - (calculateBalance(paymentsOrCredits) + calculateBalance(purchases));
-		console.log(newBalance)
-		return transactions;
+	transactionsInRange.map((transaction) => {
+		// grab the transactions going in(positive # means payments or credits)
+		if(transaction.Description.includes('Payment Thank You-Mobile') || parseFloat(transaction.Amount) > 0 ){
+			paymentsOrCredits.push(transaction);
+		}else{
+			purchases.push(transaction);
+		}
 	})
-}
+	console.log(transactionsInRange.length, paymentsOrCredits.length, purchases.length)
+	console.log("payments or credits: ", calculateBalance(paymentsOrCredits), "purchases: ", calculateBalance(purchases));
+
+	balance -= (calculateBalance(paymentsOrCredits) + calculateBalance(purchases));
+	console.log(balance)
+	return transactions;
+})
+
 
 
 // TODO find all credit card payments from primary acct = PERSONAL CHK 8717
@@ -101,37 +93,37 @@ function sortTransactions(query = {}, transactions = []){
 
 // API Endpoints
 
-// Transactions
-app.get('/api/transactions/:accountNumber', async (req,res) =>{
-	console.log(req.query)
-	const data = await getAccountData(req.params.accountNumber);
-	if(req.query.startDate && req.query.endDate){
-		const results = sortTransactions({startDate: req.query.startDate, endDate : req.query.endDate}, data);
-		res.json(results)
-	}
+// // Transactions
+// app.get('/api/transactions/:accountNumber', async (req,res) =>{
+// 	console.log(req.query)
+// 	const data = await getAccountData(req.params.accountNumber);
+// 	if(req.query.startDate && req.query.endDate){
+// 		const results = sortTransactions({startDate: req.query.startDate, endDate : req.query.endDate}, data);
+// 		res.json(results)
+// 	}
 
-	res.json(data)
-})
+// 	res.json(data)
+// })
 
 
 
-// Server-Rendered Front End
-// set the view engine to ejs
-app.set('view engine', 'ejs');
-app.use('/public',express.static(__dirname + '/public'));
-// use res.render to load up an ejs view file
-// index page
-app.get('/ui/transactions/:accountNumber', async function(req, res) {
-	const data = await getAccountData(req.params.accountNumber);
-	if(req.query.startDate && req.query.endDate){
-		const results = sortTransactions({startDate: req.query.startDate, endDate : req.query.endDate}, data);
-		res.render('pages/index', {transactions: results});
-	}
-  	res.render('pages/index', {transactions: data});
+// // Server-Rendered Front End
+// // set the view engine to ejs
+// app.set('view engine', 'ejs');
+// app.use('/public',express.static(__dirname + '/public'));
+// // use res.render to load up an ejs view file
+// // index page
+// app.get('/ui/transactions/:accountNumber', async function(req, res) {
+// 	const data = await getAccountData(req.params.accountNumber);
+// 	if(req.query.startDate && req.query.endDate){
+// 		const results = sortTransactions({startDate: req.query.startDate, endDate : req.query.endDate}, data);
+// 		res.render('pages/index', {transactions: results});
+// 	}
+//   	res.render('pages/index', {transactions: data});
   
-});
+// });
 
-// Setting the server to listen at port 3000
-app.listen(3000, function(req, res) {
-	console.log("Server is running at port 3000");
-});
+// // Setting the server to listen at port 3000
+// app.listen(3000, function(req, res) {
+// 	console.log("Server is running at port 3000");
+// });
