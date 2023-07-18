@@ -10,89 +10,57 @@ const path = require("path");
 const fs = require('fs');
 // Functions
 const convertCSVToJSON = require('./functions/convertCSVToJSON');
-const groupByYear = require('./functions/groupByYear');
 const getActivity = require('./functions/getActivity');
 const getTransactions = require('./functions/getTransactions');
 const sortTransactions = require('./functions/sortTransactions');
-
-// Objects and Models
-const creditCards = require('./data/creditcards/credit_cards');
+const calculateBalance = require('./functions/calculateBalance');
+const getCard = require('./functions/getCard');
+const getAccountData = require('./functions/getAccountData');
 
 // Requiring express in our server
 const express = require('express');
 const app = express();
 
-
-async function getAccountData (accountNumber = '8717'){ 
-	return getActivity(accountNumber).then((fileName) => {
-		return getTransactions(fileName);
-	}).then((transactions) => {
-		return sortTransactions('2021', convertCSVToJSON(transactions));
-	})
-}
-
-// establishing starting point with primary acct 8717
-// starts with 10/04/2021
-
-// need to establish standing point with credit card balances relative with that date
-
-// I will have to look at the statement for 5550 to determine balance as of ~10/04/2021
-// I will also check 0529
-// I don't think I got 1864 until ~11/2021 
-// for 5550(2976), I'd like to calculate the balance based on the transactions, but i'll also grab it from the statement just to double-check the math
-
-function getCard(cardNumber = '2976'){
-	// find credit card by card number
-	return creditCards.find((card) => {
-		return card.currentEndingNumber == cardNumber || card.formerEndingNumbers.includes(cardNumber);
-	})
-}
-
 const card = getCard();
-console.log(card);
-const transactions = getAccountData('2976').then((transactions) => {
-	// based on card model, calculate the balance for each statement 
-	// i can use the opening and closing date
-	// basically I want to determine what the balance is for this card around 10/2021 
-	
-	// get all transactions starting from 01/04/2021 ending before 02/04/2021
-	const startDate = new Date('01/04/2021');
-	const endDate = new Date('02/04/2021');
+// generates monthly account summary
+function getAccountSummary(){
+	return getAccountData('2976').then((transactions) => {
+		// based on card model, calculate the balance for each statement 
+		// i can use the opening and closing date
+		// basically I want to determine what the balance is for this card around 10/2021 
+		
+		// get all transactions starting from 01/04/2021 ending before 02/04/2021
+		const startDate = new Date('02/04/2021');
+		const endDate = new Date('03/04/2021');
 
-	const transactionsInRange = [];
-	const paymentsOrCredits = [];
-	const purchases = [];
-	 transactions.results.map((transaction) => {
-		const transactionDate = new Date(transaction.TransactionDate);
-		// grab the transactions within the timeframe
-		if((transactionDate >= startDate && transactionDate < endDate)){
-			transactionsInRange.push(transaction);
-		}
+		const transactionsInRange = [];
+		const paymentsOrCredits = [];
+		const purchases = [];
+		transactions.map((transaction) => {
+			const transactionDate = new Date(transaction.TransactionDate);
+			// grab the transactions within the timeframe
+			if((transactionDate >= startDate && transactionDate < endDate)){
+				transactionsInRange.push(transaction);
+			}
+		})
+
+		transactionsInRange.map((transaction) => {
+			// grab the transactions going in(positive # means payments or credits)
+			if(transaction.Description.includes('Payment Thank You-Mobile') || parseFloat(transaction.Amount) > 0 ){
+				paymentsOrCredits.push(transaction);
+			}else{
+				purchases.push(transaction);
+			}
+		})
+		console.log(transactionsInRange.length, paymentsOrCredits.length, purchases.length)
+		console.log("payments or credits: ", calculateBalance(paymentsOrCredits), "purchases: ", calculateBalance(purchases));
+
+		const newBalance = card.previousBalance - (calculateBalance(paymentsOrCredits) + calculateBalance(purchases));
+		console.log(newBalance)
+		return transactions;
 	})
-
-	transactionsInRange.map((transaction) => {
-		// grab the transactions going in(positive # means payments or credits)
-		if(transaction.Description.includes('Payment Thank You-Mobile') || parseFloat(transaction.Amount) > 0 ){
-			paymentsOrCredits.push(transaction);
-		}else{
-			purchases.push(transaction);
-		}
-	})
-	console.log(transactionsInRange.length, paymentsOrCredits.length, purchases.length)
-	console.log("payments or credits: ", calculateBalance(paymentsOrCredits), "purchases: ", calculateBalance(purchases));
-	return transactions;
-
-});
-
-function calculateBalance(transactions){
-	let balance = 0;
-	for(let i = 0; i < transactions.length; i++){
-		balance += parseFloat(transactions[i].Amount);
-	}
-	return balance;
 }
-// i have two files in activities for this card, i know there is some overlap, maybe I can merge the two records
-// for simplicity I might just focus on 2976 for now.
+
 
 
 // TODO find all credit card payments from primary acct = PERSONAL CHK 8717
@@ -122,21 +90,28 @@ function calculateBalance(transactions){
 
 
 // API Endpoints
-// s
 
-// // Server-Rendered Front End
-// // set the view engine to ejs
-// app.set('view engine', 'ejs');
-// app.use('/public',express.static(__dirname + '/public'));
-// // use res.render to load up an ejs view file
-// // index page
-// app.get('/ui', async function(req, res) {
-// 	const data = await getAccountData();
-//   	res.render('pages/index', {data: data});
+// Transactions
+app.get('/api/transactions/:accountNumber', async (req,res) =>{
+	const data = await getAccountData(req.params.accountNumber);
+	res.json(data)
+})
+
+
+
+// Server-Rendered Front End
+// set the view engine to ejs
+app.set('view engine', 'ejs');
+app.use('/public',express.static(__dirname + '/public'));
+// use res.render to load up an ejs view file
+// index page
+app.get('/ui/transactions/:accountNumber', async function(req, res) {
+	const data = await getAccountData(req.params.accountNumber);
+  	res.render('pages/index', {transactions: data});
   
-// });
+});
 
-// // // Setting the server to listen at port 3000
-// app.listen(3000, function(req, res) {
-// 	console.log("Server is running at port 3000");
-// });
+// Setting the server to listen at port 3000
+app.listen(3000, function(req, res) {
+	console.log("Server is running at port 3000");
+});
