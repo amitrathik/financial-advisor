@@ -9,10 +9,6 @@
 const path = require("path");
 const fs = require('fs');
 // Functions
-const convertCSVToJSON = require('./functions/convertCSVToJSON');
-const getActivity = require('./functions/getActivity');
-const getTransactions = require('./functions/getTransactions');
-const sortTransactions = require('./functions/sortTransactions');
 const calculateBalance = require('./functions/calculateBalance');
 const getCard = require('./functions/getCard');
 const getAccountData = require('./functions/getAccountData');
@@ -62,7 +58,6 @@ function getAccountSummary(){
 }
 
 
-
 // TODO find all credit card payments from primary acct = PERSONAL CHK 8717
 // Should have description something like "Payment to BANK card ending in #### MM/DD"
 // From this information we can use the card # (and bank) to find transactions for the card
@@ -87,13 +82,34 @@ function getAccountSummary(){
 
 // Sorting out the CC transactions will be another task in itself
 
+function sortTransactions(query = {}, transactions = []){
+
+	const startDate = new Date(query.startDate);
+	const endDate = new Date(query.endDate);
+	const results = [];
+	transactions.map((transaction) => {
+		const transactionDate = new Date(transaction.TransactionDate);
+		// grab the transactions within the timeframe
+		if((transactionDate >= startDate && transactionDate < endDate)){
+			results.push(transaction);
+		}
+	})
+
+	return results;
+}
 
 
 // API Endpoints
 
 // Transactions
 app.get('/api/transactions/:accountNumber', async (req,res) =>{
+	console.log(req.query)
 	const data = await getAccountData(req.params.accountNumber);
+	if(req.query.startDate && req.query.endDate){
+		const results = sortTransactions({startDate: req.query.startDate, endDate : req.query.endDate}, data);
+		res.json(results)
+	}
+
 	res.json(data)
 })
 
@@ -107,6 +123,10 @@ app.use('/public',express.static(__dirname + '/public'));
 // index page
 app.get('/ui/transactions/:accountNumber', async function(req, res) {
 	const data = await getAccountData(req.params.accountNumber);
+	if(req.query.startDate && req.query.endDate){
+		const results = sortTransactions({startDate: req.query.startDate, endDate : req.query.endDate}, data);
+		res.render('pages/index', {transactions: results});
+	}
   	res.render('pages/index', {transactions: data});
   
 });
