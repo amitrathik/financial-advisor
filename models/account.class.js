@@ -4,4 +4,8 @@ class Account{
 			
 		}
 	}
+
+	get(){
+		
+	}
 }
