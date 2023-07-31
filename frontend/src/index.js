@@ -4,6 +4,7 @@ import "./styles/main.scss";
 
 // import { ListView } from "./views/ListView";
 import { AccountsList } from "./views/Accounts/AccountsList";
+import { AccountDetails } from "./views/Accounts/AccountDetails";
 import { getAccounts } from "./lib/accountsService";
 import {getTransactions} from './lib/transactionsService'
 
@@ -15,6 +16,7 @@ class App extends React.Component {
 			selectedAccount:'',
 			transactions : []
 		};
+
 	}
 
 	
@@ -25,24 +27,38 @@ class App extends React.Component {
 		})
 	}
 
-    render() {
+	handleAccountSelection = (selectedAccount) => {
+		this.setState({
+			selectedAccount : selectedAccount
+		})
+	}
 
+	resetAccountSelection = () => {
+		this.setState({
+			selectedAccount : ''
+		})
+	}
+
+    render() {
+		const View = this.state.selectedAccount ? 
+						<AccountDetails 
+							account={this.state.selectedAccount}
+							resetAccountSelection={this.resetAccountSelection}
+						/> : 
+						<AccountsList 
+							items={this.state.accounts}
+							handleAccountSelection={this.handleAccountSelection}
+						/> 
         return (
             <div>
 				<div className="App">
 					<div className="Header">
 						<h2>Financial Advisor</h2>
 					</div>
-					<div className="Accounts">
-						<AccountsList 
-							items={this.state.accounts}
-						/>
+					
+					<div className="View">
+						{View}
 					</div>
-					{/* <div className="Transactions">
-						<ListView 
-							items={this.state.transactions}
-						/>
-					</div> */}
 				</div>
             </div>
         );

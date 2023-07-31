@@ -1,7 +1,12 @@
 import React from "react"
 export const Account = (props) => {
-	console.log(props);
   return (
-    <li>{props.name}</li>
+    <li>
+      <button 
+        onClick={() => {props.handleAccountSelection(props.endingNumber)}} 
+      >
+        {props.name}
+      </button>
+    </li>
   )
 }

@@ -89,7 +89,7 @@ app.get('/api/accounts/', async (req,res) =>{
 	},{
 		bank : 'Chase',
 		type : 'card',
-		currentEndingNumber : '6086',
+		endingNumber : '6086',
 		formerEndingNumbers : ['1864'],
 		name : 'Chase Freedom Unlimited',
 	}]
