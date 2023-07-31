@@ -14,9 +14,11 @@ const getCard = require('./functions/getCard');
 const getAccountData = require('./functions/getAccountData');
 
 // Requiring express in our server
+const cors = require("cors");
 const express = require('express');
 const app = express();
-
+//Enable cors
+app.use(cors());
 
 const card = getCard();
 // generates monthly account summary
@@ -70,37 +72,20 @@ function sortTransactions(query = {}, transactions = []){
 
 // API Endpoints
 
-// // Transactions
-// app.get('/api/transactions/:accountNumber', async (req,res) =>{
-// 	console.log(req.query)
-// 	const data = await getAccountData(req.params.accountNumber);
-// 	if(req.query.startDate && req.query.endDate){
-// 		const results = sortTransactions({startDate: req.query.startDate, endDate : req.query.endDate}, data);
-// 		res.json(results)
-// 	}
+// Transactions
+app.get('/api/transactions/:accountNumber', async (req,res) =>{
+	console.log(req.query)
+	const data = await getAccountData(req.params.accountNumber);
+	if(req.query.startDate && req.query.endDate){
+		const results = sortTransactions({startDate: req.query.startDate, endDate : req.query.endDate}, data);
+		res.json(results)
+	}
 
-// 	res.json(data)
-// })
+	res.json(data)
+})
 
 
-
-// // Server-Rendered Front End
-// // set the view engine to ejs
-// app.set('view engine', 'ejs');
-// app.use('/public',express.static(__dirname + '/public'));
-// // use res.render to load up an ejs view file
-// // index page
-// app.get('/ui/transactions/:accountNumber', async function(req, res) {
-// 	const data = await getAccountData(req.params.accountNumber);
-// 	if(req.query.startDate && req.query.endDate){
-// 		const results = sortTransactions({startDate: req.query.startDate, endDate : req.query.endDate}, data);
-// 		res.render('pages/index', {transactions: results});
-// 	}
-//   	res.render('pages/index', {transactions: data});
-  
-// });
-
-// // Setting the server to listen at port 3000
-// app.listen(3000, function(req, res) {
-// 	console.log("Server is running at port 3000");
-// });
+// Setting the server to listen at port 3000
+app.listen(3000, function(req, res) {
+	console.log("Server is running at port 3000");
+});

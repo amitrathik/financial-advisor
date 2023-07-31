@@ -1,2 +1,10 @@
+# Node build artifacts
 node_modules
-data/
+npm-debug.log
+
+# Local development
+*.env
+*.dev
+.DS_Store
+dist
+data
