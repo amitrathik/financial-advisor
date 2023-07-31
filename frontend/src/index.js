@@ -14,6 +14,7 @@ class App extends React.Component {
         this.state = {
 			accounts: [],
 			selectedAccount:'',
+			selectedYear:'2023',
 			transactions : []
 		};
 
@@ -27,10 +28,14 @@ class App extends React.Component {
 		})
 	}
 
+
 	handleAccountSelection = (selectedAccount) => {
-		this.setState({
-			selectedAccount : selectedAccount
-		})
+		getTransactions(selectedAccount).then((transactions) => {
+			this.setState({
+				selectedAccount : selectedAccount,
+				transactions : transactions
+			})
+		});
 	}
 
 	resetAccountSelection = () => {
@@ -39,11 +44,24 @@ class App extends React.Component {
 		})
 	}
 
+	handleYearSelection = (evt) => {
+		this.setState({
+			selectedYear : evt.target.value
+		})
+	}
+
+	handleMonthSelection = () => {
+
+	}
+
     render() {
 		const View = this.state.selectedAccount ? 
 						<AccountDetails 
 							account={this.state.selectedAccount}
+							transactions={this.state.transactions}
 							resetAccountSelection={this.resetAccountSelection}
+							handleYearSelection={this.handleYearSelection}
+							selectedYear={this.state.selectedYear}
 						/> : 
 						<AccountsList 
 							items={this.state.accounts}

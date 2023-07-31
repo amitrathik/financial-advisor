@@ -1,14 +1,34 @@
 import React from "react"
+
+const chkModel = {
+  Details : '',
+  PostingDate : '',
+  Description : '',
+  Amount : '',
+  Type : '',
+  CheckorSlip : ''
+}
+
+const cardModel = {
+  TransactionDate : '',
+  PostDate : '',
+  Description : '',
+  Category : '',
+  Type : '',
+  Amount : '',
+  Memo : ''
+}
+
 export const Transaction = (props) => {
+  const TransactionType = props.Details ? 'CHK' : 'CARD';
+  const data = TransactionType == 'CHK' ? Object.assign(chkModel, props) : Object.assign(cardModel, props)
+  let html = '';
+  for (const key in data) {
+    html += `${data[key]} `;
+  }
   return (
     <li>
-      {/* <input type="checkbox"
-        onChange={handleToggle}
-        checked={props.isComplete}
-      /> */}
-    {props.Description}
-	  {props.Category}
-	  {props.Amount}
+      {html}
     </li>
   )
 }

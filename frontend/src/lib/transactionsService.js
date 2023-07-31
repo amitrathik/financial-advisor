@@ -1,6 +1,6 @@
-const baseUrl = 'http://localhost:3000/api/transactions/2976'
+const baseUrl = 'http://localhost:3000/api/transactions/'
 
-export const getTransactions = () => {
-  return fetch(baseUrl)
+export const getTransactions = (accountNumber) => {
+  return fetch(baseUrl + accountNumber)
     .then(res => res.json())
 }
