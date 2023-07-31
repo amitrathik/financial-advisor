@@ -72,6 +72,31 @@ function sortTransactions(query = {}, transactions = []){
 
 // API Endpoints
 
+// Accounts
+app.get('/api/accounts/', async (req,res) =>{
+	const accounts = [{
+		bank : 'Chase',
+		type : 'checking',
+		name : 'Chase Checking and Savings',
+		endingNumber : '8717',
+		formerEndingNumbers : ['9687'],
+	},{
+		bank : 'Chase',
+		type : 'card',
+		name : 'Chase Freedom',
+		endingNumber : '7089',
+		formerEndingNumbers : ['2976','5550'],
+	},{
+		bank : 'Chase',
+		type : 'card',
+		currentEndingNumber : '6086',
+		formerEndingNumbers : ['1864'],
+		name : 'Chase Freedom Unlimited',
+	}]
+
+	res.json(accounts)
+})
+
 // Transactions
 app.get('/api/transactions/:accountNumber', async (req,res) =>{
 	console.log(req.query)
