@@ -6,7 +6,7 @@ export const Transaction = (props) => {
         onChange={handleToggle}
         checked={props.isComplete}
       /> */}
-      {props.Description}
+    {props.Description}
 	  {props.Category}
 	  {props.Amount}
     </li>
