@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import "./styles/main.scss";
 
-// import { ListView } from "./views/ListView";
+
 import { AccountsList } from "./views/Accounts/AccountsList";
 import { AccountDetails } from "./views/Accounts/AccountDetails";
 import { getAccounts } from "./lib/accountsService";
@@ -15,6 +15,7 @@ class App extends React.Component {
 			accounts: [],
 			selectedAccount:'',
 			selectedYear:'2023',
+			selectedMonth : '5',
 			transactions : []
 		};
 
@@ -40,7 +41,9 @@ class App extends React.Component {
 
 	resetAccountSelection = () => {
 		this.setState({
-			selectedAccount : ''
+			selectedAccount : '',
+			selectedMonth : '5',
+			selectedYear : '2023'
 		})
 	}
 
@@ -50,8 +53,11 @@ class App extends React.Component {
 		})
 	}
 
-	handleMonthSelection = () => {
-
+	handleMonthSelection = (evt) => {
+		console.log(evt.target.value)
+		this.setState({
+			selectedMonth : evt.target.value
+		})
 	}
 
     render() {
@@ -61,7 +67,9 @@ class App extends React.Component {
 							transactions={this.state.transactions}
 							resetAccountSelection={this.resetAccountSelection}
 							handleYearSelection={this.handleYearSelection}
+							handleMonthSelection={this.handleMonthSelection}
 							selectedYear={this.state.selectedYear}
+							selectedMonth={this.state.selectedMonth}
 						/> : 
 						<AccountsList 
 							items={this.state.accounts}

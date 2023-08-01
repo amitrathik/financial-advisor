@@ -1,7 +1,6 @@
 import React from "react"
 import { Account } from "../../components/account"
 export const AccountsList = (props) => {
-  console.log(props)
   return (
     <div className="AccountsList">
       <ul>
