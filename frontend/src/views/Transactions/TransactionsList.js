@@ -6,6 +6,9 @@ import {getCreditCardPayments, getToChkAcctTransfers, getFromChkAcctTransfers, g
 import CreditCardPayments  from "../CreditCardPayments";
 import ToChkAcctTransfers from "../ToChkAcctTransfers";
 
+// data TODO: replace with API calls
+import { zelleAccounts, chkAccounts } from "../../../data/placeholder";
+
 export const TransactionsList = (props) => {
   const filteredTransactions = props.transactions;
   // const filteredTransactions = props.transactions.filter((transactions) => {
@@ -26,11 +29,7 @@ export const TransactionsList = (props) => {
     
   });
 
-  const chkAccounts = [{
-    number : '5962'
-  },{
-    number : '9161'
-  }]
+  // CHK Acct Transfers
   const ToAccountTransfers = [];
   chkAccounts.map((account,index) => {
     let results = getToChkAcctTransfers(account.number, props.transactions);
@@ -47,14 +46,7 @@ export const TransactionsList = (props) => {
     FromAccountTransfers.push(results);
   });
 
-  const zelleAccounts = [{
-    name : 'KESHAVLAL RATHI'
-  },{
-    name : 'CHRISTINA KRATOCHVILOVA'
-  },{
-    name : 'taroyln buckles'
-  }]
-
+  // Zelle 
   const FromZellePayments = [];
   zelleAccounts.map((account,index) => {
     let results = getFromZellePayments(account.name, props.transactions);
