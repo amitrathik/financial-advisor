@@ -10,8 +10,7 @@ export const AccountDetails = (props) => {
           transactions = {props.transactions}
           handleYearSelection = {props.handleYearSelection}
           selectedYear = {props.selectedYear}
-          handleMonthSelection = {props.handleMonthSelection}
-          selectedMonth = {props.selectedMonth}
+          cards = {props.cards}
       ></TransactionsList>
     </div>
   )
