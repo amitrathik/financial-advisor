@@ -33,4 +33,22 @@ function sortTransactions(year = '2023', transactions = []){
 	return response;
 }
 
+
+// function sortTransactions(query = {}, transactions = []){
+
+// 	const startDate = new Date(query.startDate);
+// 	const endDate = new Date(query.endDate);
+// 	const results = [];
+// 	transactions.map((transaction) => {
+// 		const transactionDate = new Date(transaction.TransactionDate);
+// 		// grab the transactions within the timeframe
+// 		if((transactionDate >= startDate && transactionDate < endDate)){
+// 			results.push(transaction);
+// 		}
+// 	})
+
+// 	return results;
+// }
+
+
 module.exports = sortTransactions;

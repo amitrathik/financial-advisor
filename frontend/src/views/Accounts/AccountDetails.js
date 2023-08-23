@@ -11,6 +11,7 @@ export const AccountDetails = (props) => {
           transactions = {props.transactions}
           handleYearSelection = {props.handleYearSelection}
           selectedYear = {props.selectedYear}
+          cards = {props.cards}
       ></TransactionsList>
     </div>
   )
