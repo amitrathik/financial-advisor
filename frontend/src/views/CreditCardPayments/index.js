@@ -11,3 +11,5 @@ export const CreditCardPayments = (props) => {
     </div>
   )
 }
+
+export default CreditCardPayments

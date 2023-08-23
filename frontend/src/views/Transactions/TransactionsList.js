@@ -1,9 +1,10 @@
 import React from "react"
 import { Transaction } from "../../components/transaction";
 import calculator from "../../lib/calculator";
-import getCreditCardPayments from "../../lib/getCreditCardPayments";
+import {getCreditCardPayments, getToChkAcctTransfers, getFromChkAcctTransfers, getToZellePayments, getFromZellePayments} from "../../lib/filters";
 
-import { CreditCardPayments } from "../CreditCardPayments";
+import CreditCardPayments  from "../CreditCardPayments";
+import ToChkAcctTransfers from "../ToChkAcctTransfers";
 
 export const TransactionsList = (props) => {
   const filteredTransactions = props.transactions;
@@ -24,16 +25,50 @@ export const TransactionsList = (props) => {
     }
     
   });
-  // console.log(creditCardPayments)
 
-  // const creditCardTotal = calculator(creditCardPayments['5550'])
+  const chkAccounts = [{
+    number : '5962'
+  },{
+    number : '9161'
+  }]
+  const ToAccountTransfers = [];
+  chkAccounts.map((account,index) => {
+    let results = getToChkAcctTransfers(account.number, props.transactions);
+    if(results.length > 0)
+      ToAccountTransfers.push(results);
+  });
 
-  // all transfers TO Business Chk Acct
-  // const transferToBusinessChkAcct = props.transactions.filter((transactions) => {
-  //   const AccountNumber = '5962';
-  //   return transactions.Description.includes(`Online Transfer To Chk …${AccountNumber}`)
-  // })
-  // const transferTotals = calculator(transferToBusinessChkAcct)
+  console.log(ToAccountTransfers)
+
+  const FromAccountTransfers = [];
+  chkAccounts.map((account,index) => {
+    let results = getFromChkAcctTransfers(account.number, props.transactions);
+    if(results.length > 0)
+    FromAccountTransfers.push(results);
+  });
+
+  const zelleAccounts = [{
+    name : 'KESHAVLAL RATHI'
+  },{
+    name : 'CHRISTINA KRATOCHVILOVA'
+  },{
+    name : 'taroyln buckles'
+  }]
+
+  const FromZellePayments = [];
+  zelleAccounts.map((account,index) => {
+    let results = getFromZellePayments(account.name, props.transactions);
+    if(results.length > 0)
+    FromZellePayments.push(results);
+  });
+
+  const ToZellePayments = [];
+  zelleAccounts.map((account,index) => {
+    let results = getToZellePayments(account.name, props.transactions);
+    if(results.length > 0)
+    ToZellePayments.push(results);
+  });
+
   
 
   return (
@@ -65,11 +100,15 @@ export const TransactionsList = (props) => {
         {filteredTransactions.map((item,index) => <Transaction key={index} {...item}/>)}
       </ul>
       {creditCardPayments.map((payments,index) => <CreditCardPayments key={index} payments={payments}  /> )}
-     {/*     
-      <ul>
-        {transferToBusinessChkAcct.map((item,index) => <Transaction key={index} {...item}/>)}
-        {transferTotals}
-      </ul> */}
+         
+      {ToAccountTransfers.map((transfers,index) => <ToChkAcctTransfers key={index} transfers={transfers}  /> )}
+
+      {FromAccountTransfers.map((transfers,index) => <ToChkAcctTransfers key={index} transfers={transfers}  /> )}
+
+      {FromZellePayments.map((transfers,index) => <ToChkAcctTransfers key={index} transfers={transfers}  /> )}
+      
+      {ToZellePayments.map((transfers,index) => <ToChkAcctTransfers key={index} transfers={transfers}  /> )}
+
     </div>
   )
 }
