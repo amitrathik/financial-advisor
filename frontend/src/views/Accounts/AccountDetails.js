@@ -1,7 +1,6 @@
 import React from "react"
 import {TransactionsList} from "../Transactions/TransactionsList"
 export const AccountDetails = (props) => {
-
   return (
     <div className="AccountDetails">
       <button onClick={() => props.resetAccountSelection()}>Back</button>
