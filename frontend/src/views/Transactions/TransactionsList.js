@@ -12,12 +12,16 @@ export const TransactionsList = (props) => {
   // })
   const creditCardPayments = [];
   props.cards.map((card,index) => {
+    console.log(card.currentEndingNumber);
     let results = getCreditCardPayments(card.currentEndingNumber, props.transactions);
     creditCardPayments.push(results);
     // check former numbers
-    card.formerEndingNumbers.map((olderNumber) => {
-      creditCardPayments.push(getCreditCardPayments(olderNumber, props.transactions));
-    })
+    if(card.formerEndingNumbers && card.formerEndingNumbers.length > 0){
+      card.formerEndingNumbers.map((olderNumber) => {
+        console.log(olderNumber);
+        creditCardPayments.push(getCreditCardPayments(olderNumber, props.transactions));
+      })
+    }
     
   });
   // console.log(creditCardPayments)
