@@ -2,10 +2,21 @@ import React from "react";
 import ReactDOM from "react-dom";
 import "./styles/main.scss";
 
+import { createBrowserRouter,
+    Link,
+    Route,
+    RouterProvider,
+    Routes} from 'react-router-dom'
+
 // Services
 import { getAccounts } from "./lib/accountsService";
 import { getTransactions } from './lib/transactionsService';
 import { getCards } from "./lib/cardsService";
+
+// Views
+import Dashboard from './views/Dashboard';
+import Accounts from "./views/Accounts";
+import Transactions from "./views/Transactions";
 
 // IndexDB 
 const db = window.indexedDB.open("fa_db", 1);
@@ -34,6 +45,24 @@ db.onupgradeneeded =(event) => {
 	objectStore.createIndex("created_at", "created_at", { unique: false });
 	objectStore.createIndex("updated_at", "updated_at", { unique: false });
 }
+
+
+const router = createBrowserRouter([
+    { path: "*", Component: Root },
+]);
+
+function Root() {
+    // 2️⃣ `BrowserRouter` component removed, but the <Routes>/<Route>
+    // component below are unchanged
+    return (
+      <Routes>
+        <Route path="/" element={<Dashboard />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+		<Route path="/accounts" element={<Accounts />} />
+		<Route path="/transactions" element={<Transactions />} />
+      </Routes>
+    );
+  }
 
 class App extends React.Component {
     constructor(props) {
@@ -93,43 +122,8 @@ class App extends React.Component {
 	}
 
     render() {
-		const view = '';
-		const route = this.state.route;
-		switch(route) {
-			case 'accounts':
-				view = this.state.selectedAccount ? 
-					<AccountDetails 
-						account={this.state.selectedAccount}
-						transactions={this.state.transactions}
-						cards={this.state.cards}
-						resetAccountSelection={this.resetAccountSelection}
-						handleYearSelection={this.handleYearSelection}
-						handleMonthSelection={this.handleMonthSelection}
-						selectedYear={this.state.selectedYear}
-						selectedMonth={this.state.selectedMonth}
-					/> : 
-					<AccountsList 
-						items={this.state.accounts}
-						cards={this.state.cards}
-						handleAccountSelection={this.handleAccountSelection}
-					/> 
-				break;
-			default:
-
-				break;
-		}
         return (
-            <div>
-				<div className="App">
-					<div className="Header">
-						<h2>Financial Advisor</h2>
-					</div>
-					
-					<div className="View">
-						{view}
-					</div>
-				</div>
-            </div>
+			<RouterProvider router={router} />
         );
     }
 }
