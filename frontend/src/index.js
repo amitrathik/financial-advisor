@@ -8,12 +8,19 @@ import { createBrowserRouter,
     RouterProvider,
     Routes} from 'react-router-dom'
 
+
+// Routes
+import Root from "./routes/root";
+import Contact from "./routes/contact";
+
+
 // Services
 import { getAccounts } from "./lib/accountsService";
 import { getTransactions } from './lib/transactionsService';
 import { getCards } from "./lib/cardsService";
 
 // Views
+import ErrorPage from "./views/ErrorPage";
 import Dashboard from './views/Dashboard';
 import Accounts from "./views/Accounts";
 import Transactions from "./views/Transactions";
@@ -47,87 +54,33 @@ db.onupgradeneeded =(event) => {
 }
 
 
-const router = createBrowserRouter([
-    { path: "*", Component: Root },
-]);
 
-function Root() {
-    // 2️⃣ `BrowserRouter` component removed, but the <Routes>/<Route>
-    // component below are unchanged
-    return (
-      <Routes>
-        <Route path="/" element={<Dashboard />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-		<Route path="/accounts" element={<Accounts />} />
-		<Route path="/transactions" element={<Transactions />} />
-      </Routes>
-    );
-  }
+const router = createBrowserRouter([
+	{
+	  path: "/",
+	  element: <Root />,
+	  errorElement: <ErrorPage />,
+	  children: [
+		{
+		  path: "contacts/:contactId",
+		  element: <Contact />,
+		},
+	  ],
+	}
+]);
 
 class App extends React.Component {
     constructor(props) {
-		// lets get a DB setup in the browser for testing / local storage / demo prep
 		super(props);
-        this.state = {
-			route : '',
-			accounts: [],
-			cards : [],
-			selectedAccount:'',
-			selectedYear:'',
-			transactions : []
-		};
-
-	}
-
-	
-	componentDidMount(){
-		// Promise.all([getAccounts(), getCards()])
-		//  .then(([accounts, cards]) => {
-		//    this.setState({
-		// 		accounts : accounts, 
-		// 		cards : cards
-		// 	})
-		//  });
-	}
-
-
-	handleAccountSelection = (selectedAccount) => {
-		getTransactions(selectedAccount).then((transactions) => {
-			this.setState({
-				selectedAccount : selectedAccount,
-				transactions : transactions
-			})
-		});
-	}
-
-	resetAccountSelection = () => {
-		this.setState({
-			selectedAccount : '',
-			selectedMonth : '5',
-			selectedYear : '2023'
-		})
-	}
-
-	handleYearSelection = (evt) => {
-		this.setState({
-			selectedYear : evt.target.value
-		})
-	}
-
-	handleMonthSelection = (evt) => {
-		console.log(evt.target.value)
-		this.setState({
-			selectedMonth : evt.target.value
-		})
 	}
 
     render() {
         return (
-			<RouterProvider router={router} />
+            <RouterProvider router={router} />
         );
     }
 }
-
+  
 ReactDOM.render(
 	<App />,
 	document.getElementById("root")

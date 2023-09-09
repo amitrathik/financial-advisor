@@ -1,6 +1,6 @@
 import React from "react"
-const Account = (props) => {
 
+const Account = (props) => {
   return (
     <div className="Account">
         {props.accounts ? 'No results' : ''}
