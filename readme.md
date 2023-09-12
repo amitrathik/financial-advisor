@@ -1,42 +1,39 @@
-Building a few modules in node to read and manipulate my financial statement data 
+# Financial Advisor
+
+Software I am developing, primarily to help me with my own personal and business accounting. But, also going through the motions to apply everything I've learned up to this point to build this project as a portfolio item.
+
+After all, it will be a great to showcase my approach to software design and development. 
+
+Currently, it is setup as a decoupled web app with client and server separated but in the same repo for now.
 
 
-If CREDIT, split description by space, first string should be posting data mm/dd, inject year based on statement
+The BE is set up using NodeJS + MySQL
+	`cd /backend`	    # 
+	``					# Create .env file to store config for mysql connection	
+	`npm run install`   # install dependencies
+	`npm run start`		# starts dev server
+
+The FE is set up using React
+	`cs /frontend`      #
+	``					# Create data/ to store placeholder objects to run and test without DB
+	`npm install`		# install dependencies
+	`npm run start` 	# starts dev server
 
 
-Now that I have my transactions in CSV format, it's time to follow the money.
+With the decoupled architecture, I am able to isolate my focus on front-end UI or back-end data analysis. It also allows me to sub out the front-end or back-end.
 
-I manually entered in my transactions for 9687 and so I anticipate having typos and other errors, but I can still move forward with the general functionality and modules.
+Ways I would like to be able to sort the transactions:
+- group by name, category, frequency, price
+- map them chronologically
+- assign labels to identify which are business vs personal
+- mark one-off purchases, gauge risk level of purchase (planned vs impulse)
+- research alternatives for recurring and planned purchases for cost reduction possibilities
+- reflect on impulse purchases and analyze what made them happen, if it was actually a good thing or a bad thing
 
-Questions to answer:
-- How much money flowed into my bank account(s)?
-- Where did that money come from?
-- What needs to be reported to IRS?
-
-- How much money flowed out of my bank account(s)?
-- Where did the money go?
-- What can be written off as business expenses?
-
-Anything else I need to know?
+Being able to sort the transactions will allow me to analyze my spending history in order to forecast my future spending and targeted budget to sustain my life and on-going personal development. 
 
 
-Some goals for the application:
-- Group my transactions by frequency
-- Visualize my transactions in a calendar view to better visualize my upcoming bills and expenses to develop a better budget and financial plan
-
-Currently, my mindset is to think about this from a personal use case, but eventually, I'd like to refactor the code for a business application or for a consumer market.
-
-Some goals for this project:
-- Limiting myself to a programming language and it's native functionality to architect the logic without using third-party dependencies.
-- For this project, I am using Node and going to learn more about manipulating files and data with Node
-- It would be cool to then develop this application with other programming languages like Python to see how it compares in performance and other benchmarks
+Purchases
+Money Transfer
 
 
-
-		this.details = details;
-		this.postingDate = postingDate;
-		this.description = description;
-		this.amount = amount;
-		this.type = type;
-		this.balance = balance;
-		this.checkOrSlipNo = checkOrSlipNo;

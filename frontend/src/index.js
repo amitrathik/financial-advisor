@@ -9,6 +9,7 @@ import convertCSVToJSON from "./lib/helpers/convertCSVToJSON";
 // views
 import TransactionsList  from "./views/Transactions/TransactionsList";
 import { ImportForm } from "./components/importForm";
+import { Transaction } from "./components/transaction";
 
 class App extends React.Component {
     constructor(props) {
@@ -20,6 +21,8 @@ class App extends React.Component {
 			page : 1,
 			offset : 0,
 			limit : 1,
+			type : "",
+			account : "",
 			from : "",
 			to : "",
 			createNewAccount : false,
@@ -76,6 +79,30 @@ class App extends React.Component {
 
 	}
 
+	handleTypeSelection = (evt) => {
+		this.setState({
+			type : evt.target.value,
+		})
+	}
+
+	handleImport = (evt) => {
+		evt.preventDefault();
+		console.log("handle import", evt)
+		const formData = new FormData(evt.target);
+		let transaction = {}
+		const transactions = this.state.transactions
+		Object.entries(evt.target.elements).forEach(([name, input]) => {
+			if(input.type != 'submit') {
+				transaction[input.name] = input.value;
+			}
+		});
+		transactions.push(transaction);
+		this.setState({
+			transactions:transactions,
+			page: this.state.page + 1
+		})
+	}
+
 	paginate(){
 		const transactions = this.state.transactions;
 		const page = this.state.page;
@@ -86,19 +113,22 @@ class App extends React.Component {
 
     render() {
 		const transactions = this.paginate();
+		const transaction = transactions[0];
+		console.log(transaction)
         return (
 				this.state.transactions.length > 0 ? 
 					<div>
 						<p>Transactions</p>
-						<TransactionsList 
-							transactions={transactions}
-						/>
+						<Transaction key={transaction.id} {...transaction}/>
 						<ImportForm 
-							transaction={transactions[0]}
+							transaction={transaction}
 							accounts={this.state.accounts}
+							type={this.state.type}
+							handleTypeSelection={this.handleTypeSelection}
 							handleAccountSelection={this.handleAccountSelection}
 							handleAccountCreation={this.handleAccountCreation}
 							handleInputChange={this.handleInputChange}
+							handleImport={this.handleImport}
 							createNewAccount={this.state.createNewAccount}
 						/>
 					</div>
