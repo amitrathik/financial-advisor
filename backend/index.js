@@ -17,12 +17,15 @@ const CreditCards = require('./data/accounts/credit_cards');
 const calculateBalance = require('./functions/calculateBalance');
 const getAccountData = require('./functions/getAccountData');
 
+require('dotenv').config();
 // Requiring express in our server
 const cors = require("cors");
-const express = require('express');
 const app = express();
+const port = process.env.port
 //Enable cors
 app.use(cors());
+app.use(express.json());       
+app.use(express.urlencoded({extended: true})); 
 
 // API Endpoints
 
