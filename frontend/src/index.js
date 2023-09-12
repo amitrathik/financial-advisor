@@ -1,82 +1,118 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import "./styles/main.scss";
-
-import { createBrowserRouter,
-    Link,
-    Route,
-    RouterProvider,
-    Routes} from 'react-router-dom'
-
-
-// Routes
-import Root from "./routes/root";
-import Contact from "./routes/contact";
-
-
-// Services
-import { getAccounts } from "./lib/accountsService";
-import { getTransactions } from './lib/transactionsService';
-import { getCards } from "./lib/cardsService";
-
-// Views
-import ErrorPage from "./views/ErrorPage";
-import Dashboard from './views/Dashboard';
-import Accounts from "./views/Accounts";
-import Transactions from "./views/Transactions";
-
-// IndexDB 
-const db = window.indexedDB.open("fa_db", 1);
-// these two event handlers act on the IDBDatabase object,
-// when the database is opened successfully, or not
-db.onerror = (event) => {
-	console.log("error loading db")
-}
-
-db.onsuccess = (event) => {
-	console.log("db initialized")
-}
-
-db.onupgradeneeded =(event) => {
-	const db = event.target.result;
-
-	db.onerror = (event) => {
-	  console.log("error loading db")
-	};
-
-	const objectStore = db.createObjectStore("accounts", {
-		keyPath: "number",
-	});
-	objectStore.createIndex("type", "type", { unique: false });
-	objectStore.createIndex("balance", "balance", { unique: false });
-	objectStore.createIndex("created_at", "created_at", { unique: false });
-	objectStore.createIndex("updated_at", "updated_at", { unique: false });
-}
-
-
-
-const router = createBrowserRouter([
-	{
-	  path: "/",
-	  element: <Root />,
-	  errorElement: <ErrorPage />,
-	  children: [
-		{
-		  path: "contacts/:contactId",
-		  element: <Contact />,
-		},
-	  ],
-	}
-]);
+// data
+import { accounts as ListOfAccounts} from "../data/accounts";
+// helpers
+import { generateId } from "./lib/helpers";
+import convertCSVToJSON from "./lib/helpers/convertCSVToJSON";
+// views
+import TransactionsList  from "./views/Transactions/TransactionsList";
+import { ImportForm } from "./components/importForm";
 
 class App extends React.Component {
     constructor(props) {
 		super(props);
+		this.state = {
+			file : null,
+			transactions : [],
+			accounts : ListOfAccounts,
+			page : 1,
+			offset : 0,
+			limit : 1,
+			from : "",
+			to : "",
+			createNewAccount : false,
+			newAcctName : "",
+			newAcctNo : "",
+			newAcctType : ""
+		}
+	}
+
+	handleFileUpload = (evt) => {
+		const file = evt.target.files[0];
+		const reader = new FileReader();
+
+		reader.onload = (evt) => {
+			const results = convertCSVToJSON(evt.target.result);
+			this.setState({
+				transactions : results
+			})
+		}
+		reader.readAsText(file);
+
+	}
+
+	handleAccountSelection = (evt) => {
+		console.log(evt.target.name)
+		this.setState({
+			[evt.target.name] : evt.target.value,
+			createNewAccount : evt.target.value == "new" 
+		})
+	}
+
+	handleInputChange = (evt) => {
+		this.setState({
+			[evt.target.name] : evt.target.value,
+		})
+	}
+
+	handleAccountCreation = (evt) => {
+		evt.preventDefault();
+		const {newAcctName,newAcctNo,newAcctType} = this.state
+		// time to create acct, for now, I'll just push new object to accounts
+		const accounts = this.state.accounts;
+		accounts.push({
+			id : generateId(),
+			name: newAcctName,
+			number : newAcctNo,
+			type : newAcctType
+		})
+
+		this.setState({
+			accounts : accounts,
+			createNewAccount : false
+		})
+
+	}
+
+	paginate(){
+		const transactions = this.state.transactions;
+		const page = this.state.page;
+		const limit = this.state.limit;
+		const offset = this.state.offset;
+		return transactions.slice((page - 1) * limit, page * limit);
 	}
 
     render() {
+		const transactions = this.paginate();
         return (
-            <RouterProvider router={router} />
+				this.state.transactions.length > 0 ? 
+					<div>
+						<p>Transactions</p>
+						<TransactionsList 
+							transactions={transactions}
+						/>
+						<ImportForm 
+							transaction={transactions[0]}
+							accounts={this.state.accounts}
+							handleAccountSelection={this.handleAccountSelection}
+							handleAccountCreation={this.handleAccountCreation}
+							handleInputChange={this.handleInputChange}
+							createNewAccount={this.state.createNewAccount}
+						/>
+					</div>
+				: 
+					<div>
+						<p>Import Transactions</p>
+						<form>
+							<input 
+								type="file"
+								onChange={this.handleFileUpload} 
+							/>
+							<button type="button">Upload</button>
+						</form> 
+					</div>
         );
     }
 }
