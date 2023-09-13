@@ -103,15 +103,14 @@ class App extends React.Component {
 		console.log("handle import", evt)
 		const formData = new FormData(evt.target);
 		let transaction = {}
-		const transactions = this.state.transactions
 		Object.entries(evt.target.elements).forEach(([name, input]) => {
 			if(input.type != 'submit') {
 				transaction[input.name] = input.value;
 			}
 		});
-		transactions.push(transaction);
+		// create in db
+		createItem("transactions", transaction);
 		this.setState({
-			transactions:transactions,
 			page: this.state.page + 1
 		})
 	}
