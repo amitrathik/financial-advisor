@@ -2,7 +2,7 @@ import React from "react";
 
 export const AccountSelection = (props) => {
 	const AccountSelection = props.accounts.map((account, key) => {
-		return <option key={key} value={account.id}>{account.type} - {account.name} | {account.number}</option>
+		return <option key={key} value={account.number}>{account.type} - {account.name} | {account.number}</option>
 	})
     return (
 		<div>			

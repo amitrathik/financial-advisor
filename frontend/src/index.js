@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 import "./styles/main.scss";
 // data
 import { accounts as ListOfAccounts} from "../data/accounts";
+import { SetupDB, createItem, getItem } from "./lib/db";
 // helpers
 import { generateId } from "./lib/helpers";
 import convertCSVToJSON from "./lib/helpers/convertCSVToJSON";
@@ -10,6 +11,10 @@ import convertCSVToJSON from "./lib/helpers/convertCSVToJSON";
 import TransactionsList  from "./views/Transactions/TransactionsList";
 import { ImportForm } from "./components/importForm";
 import { Transaction } from "./components/transaction";
+
+// initialize web db
+const db = window.indexedDB.open("fa_db", 1);
+SetupDB(db);
 
 class App extends React.Component {
     constructor(props) {
@@ -30,6 +35,7 @@ class App extends React.Component {
 			newAcctNo : "",
 			newAcctType : ""
 		}
+
 	}
 
 	handleFileUpload = (evt) => {
@@ -65,13 +71,20 @@ class App extends React.Component {
 		const {newAcctName,newAcctNo,newAcctType} = this.state
 		// time to create acct, for now, I'll just push new object to accounts
 		const accounts = this.state.accounts;
+		// set up new acct obj
+		const account = {
+			name: newAcctName,
+			number : newAcctNo,
+			type : newAcctType
+		}
+		// create in db
+		createItem("accounts", account);
+		// push acct to array and update state to refresh fe
 		accounts.push({
-			id : generateId(),
 			name: newAcctName,
 			number : newAcctNo,
 			type : newAcctType
 		})
-
 		this.setState({
 			accounts : accounts,
 			createNewAccount : false
