@@ -61,6 +61,7 @@ export const createItem = (object, item) => {
 export const getItem = (object, item) => {		
 	// initialize web db
 	const db = window.indexedDB.open("fa_db", 1);
+	const results = [];
 	db.onsuccess = (event) => {
 		console.log("db initialized")
 		console.log(event.target.result)
@@ -69,11 +70,34 @@ export const getItem = (object, item) => {
 		const objectStore = transaction.objectStore(object);
 		const request = objectStore.get(item);
 		request.onsuccess = (event) => {
-			console.log("retrieved",event.target.result);		
+			console.log("retrieved",event.target.result)
+			results = event.target.result;	
+			return results;	
 		};
 		request.onerror = (event) => {
 			console.log("error", event)
 		}
 	}
+
+}
+
+export const getItems = (object) => {		
+	// initialize web db
+	const db = window.indexedDB.open("fa_db", 1);
+	return db;
+	// return db.onsuccess = (event) => {
+	// 	console.log("db initialized")
+	// 	console.log(event.target.result)
+	// 	const db = event.target.result;		
+	// 	const transaction = db.transaction([object], "readwrite")
+	// 	const objectStore = transaction.objectStore(object);
+	// 	const request = objectStore.getAll();
+	// 	request.onsuccess = (event) => {
+	// 		return event;
+	// 	};
+	// 	request.onerror = (event) => {
+	// 		console.log("error", event)
+	// 	}
+	// }
 
 }

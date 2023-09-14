@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import "./styles/main.scss";
 // data
 import { accounts as ListOfAccounts} from "../data/accounts";
-import { SetupDB, createItem, getItem } from "./lib/db";
+import { SetupDB, createItem, getItem, getItems } from "./lib/db";
 // helpers
 import { generateId } from "./lib/helpers";
 import convertCSVToJSON from "./lib/helpers/convertCSVToJSON";
@@ -11,6 +11,7 @@ import convertCSVToJSON from "./lib/helpers/convertCSVToJSON";
 import TransactionsList  from "./views/Transactions/TransactionsList";
 import { ImportForm } from "./components/importForm";
 import { Transaction } from "./components/transaction";
+import { AccountSelection } from "./components/accountSelection";
 
 // initialize web db
 const db = window.indexedDB.open("fa_db", 1);
@@ -35,7 +36,32 @@ class App extends React.Component {
 			newAcctNo : "",
 			newAcctType : ""
 		}
+	}
 
+	componentDidMount(){
+		const db = getItems('transactions');
+		const object = "transactions";
+		db.onsuccess = (event) => {
+			const db = event.target.result;	
+			const transaction = db.transaction([object], "readwrite")
+			const objectStore = transaction.objectStore(object);
+			const request = objectStore.getAll();
+			request.onsuccess = (event) => {
+				this.setState({
+					transactions : event.target.result
+				})
+					
+			};
+			request.onerror = (event) => {
+				console.log("error", event)
+			}
+		}
+		// const createdAccounts = getItems('accounts');
+		// console.log("imported transactions", importedTransactions,"created accts", createdAccounts)
+		// this.setState({
+		// 	transactions : importedTransactions,
+		// 	accounts : createdAccounts
+		// })
 	}
 
 	handleFileUpload = (evt) => {
@@ -143,6 +169,12 @@ class App extends React.Component {
 							handleImport={this.handleImport}
 							createNewAccount={this.state.createNewAccount}
 						/>
+						<AccountSelection
+							accounts={this.state.accounts}
+						/>
+						{/* <TransactionsList
+							transactions={}
+						/> */}
 					</div>
 				: 
 					<div>

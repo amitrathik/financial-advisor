@@ -4,7 +4,7 @@ import { AccountSelection } from "../accountSelection";
 
 export const ImportForm = (props) => {
 	const transaction = props.transaction;
-	const date = new Date(transaction.PostingDate);
+	const date = new Date(transaction.PostingDate ? transaction.PostingDate : transaction.date);
 	const year = date.getFullYear();
 	const month = date.getMonth();
 	const day = date.getDay();
