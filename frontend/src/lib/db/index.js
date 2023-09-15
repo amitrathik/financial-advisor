@@ -1,41 +1,46 @@
+let request = null;
+let db = null;
+let version = 1;
 // IndexDB 
-export const SetupDB = (db) => {
-	// these two event handlers act on the IDBDatabase object,
-	// when the database is opened successfully, or not
-	db.onerror = (event) => {
-		console.log("error loading db")
-	}
-
-	db.onsuccess = (event) => {
-		console.log("db initialized")
-	}
-
-	db.onupgradeneeded =(event) => {
-		const db = event.target.result;
-
-		db.onerror = (event) => {
-		console.log("error loading db")
+export const SetupDB = (dbName, version) => {
+	return new Promise((resolve) => {
+		// open the connection
+		const request = indexedDB.open(dbName, version);
+	
+		request.onupgradeneeded = () => {
+		  	const db = request.result;
+			// Create Account Object Store
+			const accountObjectStore = db.createObjectStore("accounts", {
+				keyPath : "number"
+			});
+			accountObjectStore.createIndex("name", "name", { unique: false });
+			accountObjectStore.createIndex("number", "number", { unique: true });
+			accountObjectStore.createIndex("type", "type", { unique: false });
+	
+			// Create Transaction Object Store
+			const transactionObjectStore = db.createObjectStore("transactions", {
+				autoIncrement : true
+			});
+			transactionObjectStore.createIndex("amount", "amount", { unique: false });
+			transactionObjectStore.createIndex("date", "date", { unique: false });
+			transactionObjectStore.createIndex("type", "type", { unique: false });
+			transactionObjectStore.createIndex("account", "account", { unique: false });
+			transactionObjectStore.createIndex("to", "to", { unique: false });
+			transactionObjectStore.createIndex("from", "from", { unique: false });
 		};
+	
+		request.onsuccess = () => {
+		  db = request.result;
+		  version = db.version;
+		  console.log('request.onsuccess - initDB', version);
+		  resolve(true);
+		};
+	
+		request.onerror = () => {
+		  resolve(false);
+		};
+	  });
 
-		// Create Account Object Store
-		const accountObjectStore = db.createObjectStore("accounts", {
-			keyPath : "number"
-		});
-		accountObjectStore.createIndex("name", "name", { unique: false });
-		accountObjectStore.createIndex("number", "number", { unique: true });
-		accountObjectStore.createIndex("type", "type", { unique: false });
-
-		// Create Transaction Object Store
-		const transactionObjectStore = db.createObjectStore("transactions", {
-			autoIncrement : true
-		});
-		transactionObjectStore.createIndex("amount", "amount", { unique: false });
-		transactionObjectStore.createIndex("date", "date", { unique: false });
-		transactionObjectStore.createIndex("type", "type", { unique: false });
-		transactionObjectStore.createIndex("account", "account", { unique: false });
-		transactionObjectStore.createIndex("to", "to", { unique: false });
-		transactionObjectStore.createIndex("from", "from", { unique: false });
-	}
 }
 
 export const createItem = (object, item) => {		
@@ -81,23 +86,20 @@ export const getItem = (object, item) => {
 
 }
 
-export const getItems = (object) => {		
-	// initialize web db
-	const db = window.indexedDB.open("fa_db", 1);
-	return db;
-	// return db.onsuccess = (event) => {
-	// 	console.log("db initialized")
-	// 	console.log(event.target.result)
-	// 	const db = event.target.result;		
-	// 	const transaction = db.transaction([object], "readwrite")
-	// 	const objectStore = transaction.objectStore(object);
-	// 	const request = objectStore.getAll();
-	// 	request.onsuccess = (event) => {
-	// 		return event;
-	// 	};
-	// 	request.onerror = (event) => {
-	// 		console.log("error", event)
-	// 	}
-	// }
-
+export const getItems = (storeName) => {		
+	return new Promise((resolve) => {
+		// initialize web db
+		const request = indexedDB.open("fa_db", 1);
+	
+		request.onsuccess = () => {
+		  console.log('request.onsuccess - getAllData');
+		  const db = request.result;
+		  const tx = db.transaction(storeName, 'readonly');
+		  const store = tx.objectStore(storeName);
+		  const res = store.getAll();
+		  res.onsuccess = () => {
+			resolve(res.result);
+		  };
+		};
+	});
 }

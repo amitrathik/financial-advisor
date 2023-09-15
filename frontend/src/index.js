@@ -13,9 +13,7 @@ import { ImportForm } from "./components/importForm";
 import { Transaction } from "./components/transaction";
 import { AccountSelection } from "./components/accountSelection";
 
-// initialize web db
-const db = window.indexedDB.open("fa_db", 1);
-SetupDB(db);
+SetupDB('fa_db', 1);
 
 class App extends React.Component {
     constructor(props) {
@@ -38,30 +36,15 @@ class App extends React.Component {
 		}
 	}
 
-	componentDidMount(){
-		const db = getItems('transactions');
-		const object = "transactions";
-		db.onsuccess = (event) => {
-			const db = event.target.result;	
-			const transaction = db.transaction([object], "readwrite")
-			const objectStore = transaction.objectStore(object);
-			const request = objectStore.getAll();
-			request.onsuccess = (event) => {
-				this.setState({
-					transactions : event.target.result
-				})
-					
-			};
-			request.onerror = (event) => {
-				console.log("error", event)
-			}
-		}
-		// const createdAccounts = getItems('accounts');
-		// console.log("imported transactions", importedTransactions,"created accts", createdAccounts)
-		// this.setState({
-		// 	transactions : importedTransactions,
-		// 	accounts : createdAccounts
-		// })
+	async componentDidMount(){
+		const importedTransactions = await getItems('transactions');
+		const createdAccounts = await getItems('accounts');
+		console.log("loaded imported transactions", importedTransactions);
+		console.log("loaded created accounts", createdAccounts);
+		this.setState({
+			// transactions : importedTransactions,
+			accounts : createdAccounts
+		})
 	}
 
 	handleFileUpload = (evt) => {
@@ -152,10 +135,10 @@ class App extends React.Component {
     render() {
 		const transactions = this.paginate();
 		const transaction = transactions[0];
-		console.log(transaction)
         return (
 				this.state.transactions.length > 0 ? 
 					<div>
+						<p>{this.state.page} of {this.state.transactions.length}</p>
 						<p>Transactions</p>
 						<Transaction key={transaction.id} {...transaction}/>
 						<ImportForm 
