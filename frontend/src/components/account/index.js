@@ -1,5 +1,5 @@
 import React from "react"
-export const Account = (props) => {
+const Account = (props) => {
   const accountNumber = props.endingNumber ? props.endingNumber : props.number;
   return (
     <li>
@@ -11,3 +11,5 @@ export const Account = (props) => {
     </li>
   )
 }
+
+export default Account;

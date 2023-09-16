@@ -1,6 +1,6 @@
 import React from "react"
 import { Transaction } from "../../components/transaction";
-class TransactionsList extends React.Component{
+class Transactions extends React.Component{
   constructor(props){
     super(props);
     this.state = {
@@ -20,4 +20,4 @@ class TransactionsList extends React.Component{
   }
 }
 
-export default TransactionsList;
+export default Transactions;

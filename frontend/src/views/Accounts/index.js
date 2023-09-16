@@ -1,35 +1,49 @@
 import React from "react"
-import Account from '../Account';
-class Accounts extends React.Component {
+import { getItems } from "../../lib/db";
+import Accounts from "../../components/accounts";
+class AccountsView extends React.Component {
     constructor(props) {
-		// lets get a DB setup in the browser for testing / local storage / demo prep
 		super(props);
         this.state = {
-            accounts : []
-		};
+          accounts : [],
+          selectedAccount : null
+        };
 
 	}
 	
-	componentDidMount(){
-		// Promise.all([getAccounts(), getCards()])
-		//  .then(([accounts, cards]) => {
-		//    this.setState({
-		// 		accounts : accounts, 
-		// 		cards : cards
-		// 	})
-		//  });
+	async componentDidMount(){
+		const accounts = await getItems('accounts');
+		console.log("loaded created accounts", accounts);
+		this.setState({
+			accounts : accounts
+		})
 	}
 
+    handleAccountSelection = (evt) => {
+		console.log(evt.target.name)
+		this.setState({
+			[evt.target.name] : evt.target.value,
+			createNewAccount : evt.target.value == "new" 
+		})
+	}
+
+
     render() {
+        const accounts = this.state.accounts;
+        const selectedAccount = this.state.selectedAccount;
         return (
             <div>
-                <ul className="list-group">
-                    {this.state.accounts.length > 1 ?  props.items.map((item,index) => <Account key={index} {...item} handleAccountSelection={props.handleAccountSelection} />) : 'No Accounts' }
-                </ul>
-                <a href={`/accounts/new`} className="btn btn-primary">Add an account</a>
+              {
+                accounts.length > 0 ? 
+                  <Accounts 
+                    accounts={accounts}
+                    handleAccountSelection={this.handleAccountSelection}
+                  />
+                  : selectedAccount ? "Selected Account" : "No accounts" 
+              }
             </div>
         );
     }
 }
 
-export default Accounts;
+export default AccountsView;
