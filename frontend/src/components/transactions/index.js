@@ -1,23 +1,14 @@
 import React from "react"
-import { Transaction } from "../../components/transaction";
-class Transactions extends React.Component{
-  constructor(props){
-    super(props);
-    this.state = {
-      transactions : props.transactions
-    }
-  }
+import {Transaction} from "../transaction";
 
-  render(){
-    const transactions = this.state.transactions
+const Transactions = (props) => {
     return (
-      <div className="TransactionsList">
-        <ul> 
-          {transactions.map((item,index) => <Transaction key={index} {...item}/>)}
-        </ul>
-      </div>
+        <div className="TransactionsList">
+            <ul>
+            {props.transactions.map((transaction,index) => <Transaction key={transaction.id} {...transaction} handleTransactionSelection={props.handleTransactionSelection} />)}
+            </ul>
+        </div>
     )
-  }
-}
+};
 
-export default Transactions;
+export default Transactions

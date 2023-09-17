@@ -12,16 +12,22 @@ class AccountDetails extends React.Component {
     async componentDidMount(){
       console.log(this.props.account)
       const account = await getItem('accounts',this.props.account );
-      console.log("loaded created accounts", account);
-      // this.setState({
-      //   accounts : accounts
-      // })
+      console.log("loaded account", account);
+      this.setState({
+        account : account
+      })
     }
 
     render() {
+        const account = this.state.account;
         return (
             <div>
-              Account Details
+              {account ? 
+                <div>
+                  <h2>Account Details</h2>
+                  <p>{account.name} - {account.number} - {account.type}</p>
+                </div>
+              : "Account not found"}
             </div>
         );
     }

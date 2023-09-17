@@ -1,5 +1,4 @@
 import React from "react";
-
 // data
 import { createItem, getItems } from "../../lib/db";
 // helpers
@@ -15,7 +14,7 @@ class ImportView extends React.Component{
         this.state = {
             file : null,
 			transactions : [],
-			accounts : ListOfAccounts,
+			accounts : [],
 			page : 1,
 			offset : 0,
 			limit : 1,
@@ -27,7 +26,6 @@ class ImportView extends React.Component{
 			newAcctName : "",
 			newAcctNo : "",
 			newAcctType : "",
-            view : ""
         }
     }
 
@@ -128,43 +126,43 @@ class ImportView extends React.Component{
 	}
 
     render(){
-        const transactions = this.paginate();
-		const transaction = transactions[0];
-        {view == "import" ? 
-            <div>
-                <p>{this.state.page} of {this.state.transactions.length}</p>
-                <p>Transactions</p>
-                <Transaction key={transaction.id} {...transaction}/>
-                <ImportForm 
-                    transaction={transaction}
-                    accounts={this.state.accounts}
-                    type={this.state.type}
-                    handleTypeSelection={this.handleTypeSelection}
-                    handleAccountSelection={this.handleAccountSelection}
-                    handleAccountCreation={this.handleAccountCreation}
-                    handleInputChange={this.handleInputChange}
-                    handleImport={this.handleImport}
-                    createNewAccount={this.state.createNewAccount}
-                />
-                <AccountSelection
-                    accounts={this.state.accounts}
-                />
-                {/* <TransactionsList
-                    transactions={}
-                /> */}
-            </div>
-        : 
-            <div>
-                <p>Import Transactions</p>
-                <form>
-                    <input 
-                        type="file"
-                        onChange={this.handleFileUpload} 
-                    />
-                    <button type="button">Upload</button>
-                </form> 
-            </div>
-        }
+        const transactions = this.state.transactions.length > 0 ? this.paginate() : [];
+        return (
+				this.state.transactions.length > 0 ? 
+				<div>
+					<p>{this.state.page} of {this.state.transactions.length}</p>
+					<p>Transactions</p>
+					<Transaction key={transactions[0].id} {...transactions[0]}/>
+					<ImportForm 
+						transaction={transactions[0]}
+						accounts={this.state.accounts}
+						type={this.state.type}
+						handleTypeSelection={this.handleTypeSelection}
+						handleAccountSelection={this.handleAccountSelection}
+						handleAccountCreation={this.handleAccountCreation}
+						handleInputChange={this.handleInputChange}
+						handleImport={this.handleImport}
+						createNewAccount={this.state.createNewAccount}
+					/>
+					<AccountSelection
+						accounts={this.state.accounts}
+					/>
+					{/* <TransactionsList
+						transactions={}
+					/> */}
+				</div>
+			: 
+				<div>
+					<p>Import Transactions</p>
+					<form>
+						<input 
+							type="file"
+							onChange={this.handleFileUpload} 
+						/>
+						<button type="button">Upload</button>
+					</form> 
+				</div>
+		)
     }
 }
 

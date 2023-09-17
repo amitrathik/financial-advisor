@@ -1,5 +1,5 @@
 import React from "react";
-import { AccountForm } from "../accountForm";
+import AccountForm  from "../accountForm";
 import { AccountSelection } from "../accountSelection";
 
 export const ImportForm = (props) => {

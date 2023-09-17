@@ -6,7 +6,8 @@ import { SetupDB } from "./lib/db";
 // views
 import Dashboard from "./views/Dashboard";
 import AccountsView from "./views/Accounts";
-import TransationsView from "./views/Transactions";
+import TransactionsView from "./views/Transactions";
+import ImportView from "./views/Import";
 
 SetupDB('fa_db', 1);
 
@@ -37,7 +38,10 @@ class App extends React.Component {
 				view = <AccountsView />
 				break;
 			case "transactions":
-				view = <TransationsView />
+				view = <TransactionsView />
+				break;
+			case "import":
+				view = <ImportView />
 				break;
 			default:
 				view = <Dashboard />
@@ -56,6 +60,9 @@ class App extends React.Component {
 							</li>
 							<li>
 								<button type="button" name="transactions" onClick={this.handleClick}>Transactions</button>
+							</li>
+							<li>
+								<button type="button" name="import" onClick={this.handleClick}>Import</button>
 							</li>
 						</ul>
 					</nav>

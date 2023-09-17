@@ -21,8 +21,10 @@ export const SetupDB = (dbName, version) => {
 	
 			// Create Transaction Object Store
 			const transactionObjectStore = db.createObjectStore("transactions", {
+				keyPath : "id",
 				autoIncrement : true
 			});
+			transactionObjectStore.createIndex("id", "id", { unique: true });
 			transactionObjectStore.createIndex("amount", "amount", { unique: false });
 			transactionObjectStore.createIndex("date", "date", { unique: false });
 			transactionObjectStore.createIndex("type", "type", { unique: false });
