@@ -1,6 +1,6 @@
 import React from "react"
 const Account = (props) => {
-  const accountNumber = props.endingNumber ? props.endingNumber : props.number;
+  const accountNumber = props.number;
   return (
     <li>
       <button 

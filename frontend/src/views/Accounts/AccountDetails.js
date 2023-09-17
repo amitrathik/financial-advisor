@@ -1,17 +1,30 @@
 import React from "react"
-import {TransactionsList} from "../Transactions/TransactionsList"
-export const AccountDetails = (props) => {
-  return (
-    <div className="AccountDetails">
-      <button onClick={() => props.resetAccountSelection()}>Back</button>
-      <h2>{props.account} Details</h2>
-      <h3>Transactions</h3>
-      <TransactionsList 
-          transactions = {props.transactions}
-          handleYearSelection = {props.handleYearSelection}
-          selectedYear = {props.selectedYear}
-          cards = {props.cards}
-      ></TransactionsList>
-    </div>
-  )
+import { getItem } from "../../lib/db";
+
+class AccountDetails extends React.Component {
+    constructor(props) {
+		    super(props);
+        this.state = {
+          account : null,
+        };
+	  }
+	
+    async componentDidMount(){
+      console.log(this.props.account)
+      const account = await getItem('accounts',this.props.account );
+      console.log("loaded created accounts", account);
+      // this.setState({
+      //   accounts : accounts
+      // })
+    }
+
+    render() {
+        return (
+            <div>
+              Account Details
+            </div>
+        );
+    }
 }
+
+export default AccountDetails;

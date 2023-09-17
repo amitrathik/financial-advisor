@@ -1,6 +1,6 @@
 import React from "react";
 
-export const AccountForm = (props) => {
+const AccountForm = (props) => {
 	const type = ""
 	return (
 		<div>
@@ -30,3 +30,5 @@ export const AccountForm = (props) => {
 	)
 
 }
+
+export default AccountForm;
