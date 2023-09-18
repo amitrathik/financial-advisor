@@ -47,7 +47,8 @@ class ImportView extends React.Component{
 		reader.onload = (evt) => {
 			const results = convertCSVToJSON(evt.target.result);
 			this.setState({
-				transactions : results
+				transactions : results,
+				page : 1
 			})
 		}
 		reader.readAsText(file);
@@ -103,13 +104,14 @@ class ImportView extends React.Component{
 	handleImport = (evt) => {
 		evt.preventDefault();
 		console.log("handle import", evt)
-		const formData = new FormData(evt.target);
 		let transaction = {}
 		Object.entries(evt.target.elements).forEach(([name, input]) => {
 			if(input.type != 'submit') {
 				transaction[input.name] = input.value;
 			}
 		});
+		// lets first see if we can find any transactions with the same description
+
 		// create in db
 		createItem("transactions", transaction);
 		this.setState({
@@ -126,13 +128,16 @@ class ImportView extends React.Component{
 	}
 
     render(){
-        const transactions = this.state.transactions.length > 0 ? this.paginate() : [];
+		console.log(this.state.page)
+		const size = this.state.transactions.length;
+        const transactions = size > 0 && this.state.page <= size ? this.paginate() : [];
+		console.log(transactions);
         return (
-				this.state.transactions.length > 0 ? 
+				size > 0 && this.state.page <= size ? 
 				<div>
 					<p>{this.state.page} of {this.state.transactions.length}</p>
 					<p>Transactions</p>
-					<Transaction key={transactions[0].id} {...transactions[0]}/>
+					<Transaction key={transactions[0].id} date={transactions[0].PostingDate} amount={transactions[0].Amount} description={transactions[0].Description} type={transactions[0].Details}/>
 					<ImportForm 
 						transaction={transactions[0]}
 						accounts={this.state.accounts}
@@ -144,15 +149,10 @@ class ImportView extends React.Component{
 						handleImport={this.handleImport}
 						createNewAccount={this.state.createNewAccount}
 					/>
-					<AccountSelection
-						accounts={this.state.accounts}
-					/>
-					{/* <TransactionsList
-						transactions={}
-					/> */}
 				</div>
 			: 
 				<div>
+					{this.state.page > size ? "Import Complete" : ""}
 					<p>Import Transactions</p>
 					<form>
 						<input 

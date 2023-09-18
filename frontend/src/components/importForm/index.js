@@ -31,6 +31,10 @@ export const ImportForm = (props) => {
 						<option value="transfer">Transfer</option>
 					</select>
 				</div>
+				<div>
+					<label>Description</label>
+					<input type="text" name="description" value={transaction.Description}/>
+				</div>
 				{
 					props.type == "transfer" 
 					? 

@@ -38,12 +38,12 @@ class TransactionsView extends React.Component {
                 transactions.length > 0 && !this.state.selectedTransaction ? 
                   <Transactions 
                     transactions={transactions}
-					handleTransactionSelection={this.handleTransactionSelection}
+					          handleTransactionSelection={this.handleTransactionSelection}
                   />
                   : 
-				  	selectedTransaction ? 
-					<TransactionDetails transaction={this.state.selectedTransaction}/> : 
-					<NoTransaction />
+                  selectedTransaction ? 
+                  <TransactionDetails transaction={this.state.selectedTransaction}/> : 
+                  <NoTransaction />
               }
             </div>
         );

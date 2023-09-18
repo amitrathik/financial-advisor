@@ -1,12 +1,11 @@
 import React from "react"
 const Account = (props) => {
-  const accountNumber = props.number;
   return (
     <li>
       <button 
-        onClick={() => {props.handleAccountSelection(accountNumber)}} 
+        onClick={() => {props.handleAccountSelection(props.number)}} 
       >
-        {props.name ? props.name : `${props.bank} - ${props.type} - ${props.number}` }
+        {`${props.type} - ${props.name} - ${props.number}` }
       </button>
     </li>
   )
