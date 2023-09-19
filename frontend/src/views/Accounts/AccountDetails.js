@@ -19,11 +19,11 @@ class AccountDetails extends React.Component {
     async componentDidMount(){
       console.log(this.props.account)
       const account = await getItem('accounts',this.props.account );
-      const transactions = await getItems('transactions');      
+      const transactions = await getItems('transactions');   
+      console.log("transactions for acct", transactions)   
       console.log("loaded account", account);
       this.setState({
         account : account,
-        transactions : filterTransactions(account.number, transactions)
       })
     }
 
