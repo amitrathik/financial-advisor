@@ -1,6 +1,8 @@
 import React from "react"
-import { getItem, editItem, createItem } from "../../lib/db";
+import { getItem, getItems, editItem, createItem } from "../../lib/db";
+import { filterTransactions } from "../../lib/filters";
 import AccountForm from "../../components/accountForm";
+import Transactions from "../../components/transactions";
 
 class AccountDetails extends React.Component {
     constructor(props) {
@@ -9,16 +11,19 @@ class AccountDetails extends React.Component {
           account : null,
           name : "",
           number : "",
-          type : ""
+          type : "",
+          transactions : []
         };
 	  }
 	
     async componentDidMount(){
       console.log(this.props.account)
       const account = await getItem('accounts',this.props.account );
+      const transactions = await getItems('transactions');      
       console.log("loaded account", account);
       this.setState({
-        account : account
+        account : account,
+        transactions : filterTransactions(account.number, transactions)
       })
     }
 
@@ -54,7 +59,10 @@ class AccountDetails extends React.Component {
                       account={account}
                       handleAccountForm={this.handleAccountForm}
                       handleInputChange={this.handleInputChange}
-                    />
+                  />
+                  <Transactions 
+                    transactions={this.state.transactions}
+                  />
                 </div>
               : "Account not found"}
             </div>
