@@ -58,6 +58,7 @@ export const ImportForm = (props) => {
 							name="account"
 							handleAccountSelection={props.handleAccountSelection} 
 							accounts={props.accounts}
+							value={props.importAcct}
 						/>
 				}
 
@@ -67,7 +68,7 @@ export const ImportForm = (props) => {
 				props.createNewAccount 
 				? 
 					<AccountForm 
-						handleAccountCreation={props.handleAccountCreation}
+						handleAccountForm={props.handleAccountForm}
 						handleInputChange={props.handleInputChange}
 					/> 
 				: 

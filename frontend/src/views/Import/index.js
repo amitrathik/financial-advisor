@@ -3,10 +3,10 @@ import React from "react";
 import { createItem, getItems } from "../../lib/db";
 // helpers
 import convertCSVToJSON from "../../lib/helpers/convertCSVToJSON";
-// views
+// components
+import { AccountSelection } from "../../components/accountSelection";
 import { ImportForm } from "../../components/importForm";
 import { Transaction } from "../../components/transaction";
-import { AccountSelection } from "../../components/accountSelection";
 
 class ImportView extends React.Component{
     constructor(props){
@@ -23,9 +23,10 @@ class ImportView extends React.Component{
 			from : "",
 			to : "",
 			createNewAccount : false,
-			newAcctName : "",
-			newAcctNo : "",
-			newAcctType : "",
+			name : "",
+			number : "",
+			type : "",
+			importAcct : ""
         }
     }
 
@@ -71,26 +72,24 @@ class ImportView extends React.Component{
 
 	handleAccountCreation = (evt) => {
 		evt.preventDefault();
-		const {newAcctName,newAcctNo,newAcctType} = this.state
+		const {name,number,type} = this.state
 		// time to create acct, for now, I'll just push new object to accounts
 		const accounts = this.state.accounts;
 		// set up new acct obj
 		const account = {
-			name: newAcctName,
-			number : newAcctNo,
-			type : newAcctType
+			name: name,
+			number : number,
+			type : type
 		}
 		// create in db
-		createItem("accounts", account);
-		// push acct to array and update state to refresh fe
-		accounts.push({
-			name: newAcctName,
-			number : newAcctNo,
-			type : newAcctType
-		})
-		this.setState({
-			accounts : accounts,
-			createNewAccount : false
+		const dbRequest = createItem("accounts", account);
+		dbRequest.then((result) => {
+			// push acct to array and update state to refresh fe
+			accounts.push(account)
+			this.setState({
+				accounts : accounts,
+				createNewAccount : false
+			})
 		})
 
 	}
@@ -142,9 +141,10 @@ class ImportView extends React.Component{
 						transaction={transactions[0]}
 						accounts={this.state.accounts}
 						type={this.state.type}
+						importAcct={this.state.importAcct}
 						handleTypeSelection={this.handleTypeSelection}
 						handleAccountSelection={this.handleAccountSelection}
-						handleAccountCreation={this.handleAccountCreation}
+						handleAccountForm={this.handleAccountCreation}
 						handleInputChange={this.handleInputChange}
 						handleImport={this.handleImport}
 						createNewAccount={this.state.createNewAccount}
@@ -158,6 +158,13 @@ class ImportView extends React.Component{
 						<input 
 							type="file"
 							onChange={this.handleFileUpload} 
+						/>
+						<AccountSelection
+							title="Associated Account"
+							name="importAcct"
+							handleAccountSelection={this.handleAccountSelection} 
+							accounts={this.state.accounts}
+							value={this.state.importAcct}
 						/>
 						<button type="button">Upload</button>
 					</form> 

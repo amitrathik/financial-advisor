@@ -7,7 +7,7 @@ export const AccountSelection = (props) => {
     return (
 		<div>			
             <label>{props.title}</label>
-            <select name={props.name}  onChange={(evt) => props.handleAccountSelection(evt)}>
+            <select name={props.name} value={props.value} onChange={(evt) => props.handleAccountSelection(evt)}>
                 <option value="">{props.title}</option>
                 {AccountSelection}
                 <option value="new">+ Create A New Account</option>

@@ -49,24 +49,22 @@ export const SetupDB = (dbName, version) => {
 
 }
 
-export const createItem = (object, item) => {		
-	// initialize web db
-	const db = window.indexedDB.open("fa_db", 1);
-	db.onsuccess = (event) => {
-		console.log("db initialized")
-		console.log(event.target.result)
-		const db = event.target.result;		
-		const transaction = db.transaction([object], "readwrite")
-		const objectStore = transaction.objectStore(object);
-		const request = objectStore.add(item);
-		request.onsuccess = (event) => {
-			console.log("object created", event.target.result)
+export const createItem = (storeName, item) => {	
+	return new Promise((resolve) => {
+		// initialize web db
+		const request = indexedDB.open("fa_db", 1);
+	
+		request.onsuccess = () => {
+		  console.log('request.onsuccess - getItem');
+		  const db = request.result;
+		  const tx = db.transaction(storeName, 'readwrite');
+		  const store = tx.objectStore(storeName);
+		  const res = store.add(item);
+		  res.onsuccess = () => {
+			resolve(res.result);
+		  };
 		};
-		request.onerror = (event) => {
-			console.log("error", event)
-		}
-	}
-
+	});	
 }
 
 export const getItem = (storeName, item) => {		
@@ -104,4 +102,23 @@ export const getItems = (storeName) => {
 		  };
 		};
 	});
+}
+
+export const editItem = (storeName, item) => {		
+	return new Promise((resolve) => {
+		// initialize web db
+		const request = indexedDB.open("fa_db", 1);
+	
+		request.onsuccess = () => {
+		  console.log('request.onsuccess - getItem');
+		  const db = request.result;
+		  const tx = db.transaction(storeName, 'readwrite');
+		  const store = tx.objectStore(storeName);
+		  const res = store.put(item);
+		  res.onsuccess = () => {
+			resolve(res.result);
+		  };
+		};
+	});
+
 }
