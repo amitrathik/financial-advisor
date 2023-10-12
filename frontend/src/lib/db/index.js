@@ -11,10 +11,12 @@ export const SetupDB = (dbName, version) => {
 		  	const db = request.result;
 			// Create Account Object Store
 			const accountObjectStore = db.createObjectStore("accounts", {
-				keyPath : "number"
+				keyPath : "id",
+				autoIncrement : true
 			});
+			accountObjectStore.createIndex("id", "id", { unique: true });
 			accountObjectStore.createIndex("name", "name", { unique: false });
-			accountObjectStore.createIndex("number", "number", { unique: true });
+			accountObjectStore.createIndex("number", "number", { unique: false });
 			accountObjectStore.createIndex("type", "type", { unique: false });
 			accountObjectStore.createIndex("formerNumbers", "formerNumbers", { unique: false });
 			accountObjectStore.createIndex("startingBalance", "startingBalance", { unique: false });

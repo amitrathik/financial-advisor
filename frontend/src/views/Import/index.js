@@ -22,10 +22,7 @@ class ImportView extends React.Component{
 			account : "",
 			from : "",
 			to : "",
-			createNewAccount : false,
-			name : "",
-			number : "",
-			type : "",
+			showAcctForm : false,
 			importAcct : ""
         }
     }
@@ -57,10 +54,10 @@ class ImportView extends React.Component{
 	}
 
 	handleAccountSelection = (evt) => {
-		console.log(evt.target.name)
+		console.log(evt.target.name, evt.target.value)
 		this.setState({
 			[evt.target.name] : evt.target.value,
-			createNewAccount : evt.target.value == "new" 
+			showAcctForm : evt.target.value == "new" 
 		})
 	}
 
@@ -70,29 +67,6 @@ class ImportView extends React.Component{
 		})
 	}
 
-	handleAccountCreation = (evt) => {
-		evt.preventDefault();
-		const {name,number,type} = this.state
-		// time to create acct, for now, I'll just push new object to accounts
-		const accounts = this.state.accounts;
-		// set up new acct obj
-		const account = {
-			name: name,
-			number : number,
-			type : type
-		}
-		// create in db
-		const dbRequest = createItem("accounts", account);
-		dbRequest.then((result) => {
-			// push acct to array and update state to refresh fe
-			accounts.push(account)
-			this.setState({
-				accounts : accounts,
-				createNewAccount : false
-			})
-		})
-
-	}
 
 	handleTypeSelection = (evt) => {
 		this.setState({
@@ -115,6 +89,12 @@ class ImportView extends React.Component{
 		createItem("transactions", transaction);
 		this.setState({
 			page: this.state.page + 1
+		})
+	}
+
+	toggleNewAccountForm = () => {
+		this.setState({
+		  showAcctForm : !this.state.showAcctForm
 		})
 	}
 
@@ -144,10 +124,10 @@ class ImportView extends React.Component{
 						importAcct={this.state.importAcct}
 						handleTypeSelection={this.handleTypeSelection}
 						handleAccountSelection={this.handleAccountSelection}
-						handleAccountForm={this.handleAccountCreation}
 						handleInputChange={this.handleInputChange}
 						handleImport={this.handleImport}
-						createNewAccount={this.state.createNewAccount}
+						showAcctForm={this.state.showAcctForm}
+						toggleNewAccountForm={this.toggleNewAccountForm}
 					/>
 				</div>
 			: 

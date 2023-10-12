@@ -58,22 +58,16 @@ export const ImportForm = (props) => {
 							name="account"
 							handleAccountSelection={props.handleAccountSelection} 
 							accounts={props.accounts}
-							value={props.importAcct}
+							value={props.account}
 						/>
 				}
 
 				<button type="submit">Import</button>
 			</form>
-			{
-				props.createNewAccount 
-				? 
-					<AccountForm 
-						handleAccountForm={props.handleAccountForm}
-						handleInputChange={props.handleInputChange}
-					/> 
-				: 
-					""
-			}
+			<AccountForm 
+				showForm={props.showAcctForm}
+				toggleNewAccountForm={props.toggleNewAccountForm}
+			/> 
 		</div>
 
 	)

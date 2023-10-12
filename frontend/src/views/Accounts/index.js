@@ -10,9 +10,6 @@ class AccountsView extends React.Component {
           accounts : [],
           selectedAccount : null,
           showNewAccountForm : false,
-          newAcctName : "",
-          newAcctNo : "",
-          newAcctType : "",
         };
 	  }
 	
@@ -31,35 +28,10 @@ class AccountsView extends React.Component {
     }
 
     toggleNewAccountForm = () => {
+      console.log("toggle form")
       this.setState({
-        showNewAccountForm : true
+        showNewAccountForm : !this.state.showNewAccountForm
       })
-    }
-
-    handleInputChange = (evt) => {
-      this.setState({
-        [evt.target.name] : evt.target.value,
-      })
-    }
-  
-    handleAccountCreation = (evt) => {
-      evt.preventDefault();
-      const {newAcctName,newAcctNo,newAcctType} = this.state
-      // time to create acct, for now, I'll just push new object to accounts
-      const accounts = this.state.accounts;
-      // set up new acct obj
-      const account = {
-        name: newAcctName,
-        number : newAcctNo,
-        type : newAcctType
-      }
-      // create in db
-      createItem("accounts", account);
-
-      this.setState({
-        showNewAccountForm : false
-      })
-  
     }
 
 
@@ -70,18 +42,23 @@ class AccountsView extends React.Component {
         return (
             <div>
               {
-                accounts.length > 0 && !this.state.selectedAccount? 
+                accounts.length > 0 && !this.state.selectedAccount ? 
                   <Accounts 
                     accounts={accounts}
                     handleAccountSelection={this.handleAccountSelection}
+                    toggleNewAccountForm={this.toggleNewAccountForm}
+                    showNewAccountForm={this.state.showNewAccountForm}
                   />
                   : selectedAccount ? 
-                    <AccountDetails account={this.state.selectedAccount}/> : 
+                    <AccountDetails 
+                      account={this.state.selectedAccount}
+                      showNewAccountForm={this.state.showNewAccountForm}
+                      toggleNewAccountForm={this.toggleNewAccountForm}
+                    /> 
+                    : 
                     <NoAccounts 
                       toggleNewAccountForm={this.toggleNewAccountForm}
                       showNewAccountForm={this.state.showNewAccountForm}
-                      handleAccountCreation={this.handleAccountCreation}
-                      handleInputChange={this.handleInputChange}
                     />
               }
             </div>
